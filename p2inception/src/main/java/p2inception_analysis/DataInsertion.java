@@ -57,7 +57,7 @@ public class DataInsertion {
             System.out.println("Connexion établie...");
             
             // Prepared Statement
-            String insertMesureLine ="INSERT INTO Mesure (Date, Pulse, Temp1, Temp2, MaxAcc, MaxGyr, AvgAcc, AvgGyr, Username) VALUES (?,?,?,?,?,?,?,?,'Cochond'inde');"; //(o°^°o)
+            String insertMesureLine ="INSERT INTO Mesure (Date, Pulse, Temp1, Temp2, MaxAcc, MaxGyr, AvgAcc, AvgGyr, Username) VALUES (?,?,?,?,?,?,?,?,'Cochondinde');"; //(o°^°o)
 
             String insertUsersLine ="INSERT INTO Users (Name) VALUES (?);";
 
