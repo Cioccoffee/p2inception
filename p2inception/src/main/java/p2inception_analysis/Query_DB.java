@@ -8,6 +8,7 @@ package p2inception_analysis;
 import java.sql.*;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 public class Query_DB{
@@ -16,6 +17,7 @@ public class Query_DB{
     private ResultSet res;
     
     Statement infoMesureAll;
+    Statement infosKnimeResult;
             
     /**
      * Methode pour se connecter Ã  la base ; prend en paramÃ¨tre le login et le mot de passe
@@ -59,5 +61,23 @@ public class Query_DB{
         
         return infos;
     }
+    
+    public LinkedList<AnalysedMesure> collectInfosKnimeResult(){
+        LinkedList<AnalysedMesure> list = new LinkedList<AnalysedMesure>();
+        try{
+                infosKnimeResult = conn.createStatement();
+                ResultSet rs = infosKnimeResult.executeQuery("select * from MesureKnimeResult;");
+                while(rs.next()){
+                    Timestamp date = rs.getTimestamp("Date");
+                    String username = rs.getString("Username");
+                    String cluster =  rs.getString("Cluster");
+                    list.add(new AnalysedMesure(date, cluster, username));
+
+                }
+                return list;
+        }catch(SQLException ex){
+            return null;
+        }
              
+    }
 }
