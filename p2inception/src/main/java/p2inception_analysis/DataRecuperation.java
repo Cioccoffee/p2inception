@@ -29,7 +29,7 @@ import jssc.SerialNativeInterface;
 public class DataRecuperation {
     
     //attributs = data to collect
-    private String Subject_Name ;
+    //private String Subject_Name ;
     private Date date ;
     private int pulse;
     private double temp1;
@@ -180,7 +180,7 @@ public class DataRecuperation {
             avgGyr = Float.parseFloat(data[5]);
             pulse = Integer.parseInt(data[6]);
             date = new Date(); //faire un format
-            Subject_Name = "";
+            //Subject_Name = "";
 
         }
 
