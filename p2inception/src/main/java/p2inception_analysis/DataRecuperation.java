@@ -75,7 +75,7 @@ public class DataRecuperation {
 
         } while (port == null);
         
-        port = "COM3";
+        port = "COM4";
         
         console.println("Connection au Port " + port);
         try {
@@ -95,9 +95,7 @@ public class DataRecuperation {
 
                             DataInsertion data_insert = new DataInsertion();
                             data_insert.addMesure(dataRecup.date, dataRecup.pulse, dataRecup.temp1, dataRecup.temp2, dataRecup.maxAcc, dataRecup.maxGyr, dataRecup.avgAcc, dataRecup.avgGyr, "Cochondinde");
-                            //doit gérer le reach DB & if not : stockage ds file whose name = current date.getTime() & name stocked in list of files of non added date
-                            //ajouter dans BD
-                            
+                            data_insert.setTemp(dataRecup.date);
                             System.out.println("data : " + dataRecup.date +" "+ dataRecup.pulse +" "+dataRecup.temp1+" "+dataRecup.temp2+" "+dataRecup.maxAcc+" "+dataRecup.maxGyr+" "+dataRecup.avgAcc+" "+dataRecup.avgGyr );
 
                         }
