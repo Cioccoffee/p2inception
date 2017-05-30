@@ -19,32 +19,31 @@ public class Query_DB{
     Statement infoMesureAll;
     Statement infosKnimeResult;
     PreparedStatement getLastCycleStatement;
+    Statement infoUser;
+    PreparedStatement getAvgCycle;
+    PreparedStatement getAvgParadox;
             
     /**
      * Methode pour se connecter Ã  la base ; prend en paramÃ¨tre le login et le mot de passe
      */
     public Query_DB() {
-            try { 
+        try { 
                         
-                                //Enregistrement de la classe du driver par le driverManager
-                                Class.forName("com.mysql.jdbc.Driver");
-				System.out.println("Driver trouvÃ©...");
-				 //CrÃ©ation d'une connexion sur la base de donnÃ©e
-				this.conn = DriverManager.getConnection("jdbc:mysql://nas-caranton.dynv6.net:995/p2inception", "lucie", "r@xt9Wkba9z4N$9g");
-                                System.out.println("Connexion Ã©tablie...");
-                                
-                                
-                                
-		    }
-                    catch(Exception e){
-                                    System.out.println(e.getMessage());
-                                    System.out.println("Error !");
-                                    System.exit(0);
-                            }
-                
-                     
+            //Enregistrement de la classe du driver par le driverManager
+            Class.forName("com.mysql.jdbc.Driver");
+            System.out.println("Driver trouvÃ©...");
+             //CrÃ©ation d'une connexion sur la base de donnÃ©e
+            this.conn = DriverManager.getConnection("jdbc:mysql://nas-caranton.dynv6.net:995/p2inception", "lucie", "r@xt9Wkba9z4N$9g");
+            System.out.println("Connexion Ã©tablie...");
+        
+        }
                     
-            } 
+        catch(Exception e){                    
+            System.out.println(e.getMessage());                    
+            System.out.println("Error !");      
+            System.exit(0);             
+        }           
+    } 
     
     public String getInfoMesureAll(){
         String infos ="";
@@ -97,4 +96,50 @@ public class Query_DB{
         }
         return cycle;
     }
+    
+    public LinkedList<String> getUser(){
+        LinkedList<String> listNom = new LinkedList<String>();
+        try{
+            infoUser = conn.createStatement();
+            ResultSet rs = infoUser.executeQuery("select Name from User");
+            while(rs.next()){
+                    String username = rs.getString("Name");
+                    listNom.add(username);
+                }
+        }catch(SQLException ex){
+            return null;
+        };
+
+        return listNom;
+    }
+    
+     public Time getMoyenCycle(String username){
+        Time moyenCycle= null;
+        try{
+            this.getAvgCycle = this.conn.prepareStatement("select AvgCycle from User where Name = ?;");
+            getAvgCycle.setString(1,username);
+            ResultSet rs = getAvgCycle.executeQuery();
+            moyenCycle = rs.getTime("AvgCycle");
+
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+        }
+
+        return moyenCycle;
+    }
+     
+    public Time getMoyenParadox(String username){
+        Time moyenParadox = null;
+        try{
+            this.getAvgParadox = this.conn.prepareStatement("select AvgParadox from User where Name = ?;");
+            getAvgParadox.setString(1,username);
+            ResultSet rs = getAvgParadox.executeQuery();
+            moyenParadox = rs.getTime("AvgParadox");
+
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+        }
+        return moyenParadox;
+    }
+    
 }
