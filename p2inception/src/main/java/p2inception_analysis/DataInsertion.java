@@ -57,7 +57,7 @@ public class DataInsertion {
             System.out.println("Connexion établie...");
             
             // Prepared Statement
-            String insertMesureLine ="INSERT INTO Mesure (Date, Pulse, Temp1, Temp2, MaxAcc, MaxGyr, AvgAcc, AvgGyr, Username) VALUES (?,?,?,?,?,?,?,?,'Cochondinde');"; //(o°^°o)
+            String insertMesureLine ="INSERT INTO Mesure (Date, Pulse, Temp1, Temp2, MaxAcc, MaxGyr, AvgAcc, AvgGyr, Username) VALUES (?,?,?,?,?,?,?,?,?);"; //(o°^°o)
 
             String insertUsersLine ="INSERT INTO Users (Name) VALUES (?);";
 
@@ -82,7 +82,7 @@ public class DataInsertion {
     }
     
     
-    public int addMesure(Date date,int pulse, double temp1, double temp2, float MaxAcc, float MaxGyr, float AvgAcc, float AvgGyr) {
+    public int addMesure(Date date,int pulse, double temp1, double temp2, float MaxAcc, float MaxGyr, float AvgAcc, float AvgGyr, String Username) {
         try {
             this.insertMesureStatement.setTimestamp(1, new Timestamp(date.getTime())  );
             this.insertMesureStatement.setInt(2, pulse);
@@ -92,7 +92,15 @@ public class DataInsertion {
             this.insertMesureStatement.setFloat(6, MaxGyr);
             this.insertMesureStatement.setFloat(7, AvgAcc);
             this.insertMesureStatement.setFloat(8, AvgGyr);
-            return this.insertMesureStatement.executeUpdate();
+            this.insertMesureStatement.setString(9, Username);
+            this.insertMesureStatement.executeUpdate();
+            this.analyseTemp1OutStatement.setTimestamp(1, new Timestamp(date.getTime())  );
+            this.analyseTemp2OutStatement.setTimestamp(1, new Timestamp(date.getTime())  );
+            this.analyseTempBothInStatement.setTimestamp(1, new Timestamp(date.getTime())  );
+            this.analyseTemp1OutStatement.execute();
+            this.analyseTemp2OutStatement.execute();
+            this.analyseTempBothInStatement.execute();
+            return 1;
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
             return -1;
