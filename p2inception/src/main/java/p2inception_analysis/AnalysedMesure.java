@@ -32,6 +32,6 @@ public class AnalysedMesure {
     }
     
     public String getUsername(){
-        return Username;
+        return username;
     }
 }
