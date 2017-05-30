@@ -94,9 +94,10 @@ public class DataRecuperation {
                             dataRecup.read(line);
 
                             DataInsertion data_insert = new DataInsertion();
-                            data_insert.addMesure(dataRecup.date, dataRecup.pulse, dataRecup.temp1, dataRecup.temp2, dataRecup.maxAcc, dataRecup.maxGyr, dataRecup.avgAcc, dataRecup.avgGyr);
+                            data_insert.addMesure(dataRecup.date, dataRecup.pulse, dataRecup.temp1, dataRecup.temp2, dataRecup.maxAcc, dataRecup.maxGyr, dataRecup.avgAcc, dataRecup.avgGyr, "Cochondinde");
                             //doit gérer le reach DB & if not : stockage ds file whose name = current date.getTime() & name stocked in list of files of non added date
                             //ajouter dans BD
+                            
                             System.out.println("data : " + dataRecup.date +" "+ dataRecup.pulse +" "+dataRecup.temp1+" "+dataRecup.temp2+" "+dataRecup.maxAcc+" "+dataRecup.maxGyr+" "+dataRecup.avgAcc+" "+dataRecup.avgGyr );
 
                         }
@@ -187,18 +188,12 @@ public class DataRecuperation {
 
     }
     
-    public boolean putMesuresInDB(){
-        DataInsertion data_insert =  new DataInsertion();
-        data_insert.addMesure(date, pulse, temp1, temp2, maxAcc, maxGyr, avgAcc, avgGyr);
-        //faire query temp for last date
-        return false;
-        
-    }
+    
 
     
 }
     
-    //établissment connexion avec remote DB
+    //établissement connexion avec remote DB
     //enregistrement direct des tuples
     //SI DB ne peut pas être atteinte, création fichier output et écriture dedans
     //ajout du nom du fichier non envoyé dans une liste attribut qu'on ouvre à chaque XXX
