@@ -7,6 +7,10 @@ package p2inception_analysis;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Time;
+import java.text.*;
+import java.util.*;
+
 /**
  *
  * @author SHU Yuting
@@ -17,6 +21,13 @@ public class UI extends JFrame implements ActionListener{
     private JButton myButtonCherche;
     private JButton myButtonEffacer;
     private JComboBox boxDate;
+    private JPanel panneauPaint;
+    private JLabel affTest;
+    private Query_DB queryDB;
+    private String user;
+    private String avgCycle;
+    private String avgParadox;
+    private String[] allDate;
     
     public UI(){
         setTitle("Interface");
@@ -29,6 +40,7 @@ public class UI extends JFrame implements ActionListener{
 	// Pour permettre la fermeture de la fenêtre lors de l'appui sur la croix rouge
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
+        queryDB = new Query_DB();
         
         /**
          * Mon panneau 1
@@ -38,7 +50,7 @@ public class UI extends JFrame implements ActionListener{
         panneauUser.setLayout(null);
         panneauUser.setBackground(Color.green);
         
-        JLabel affTest = new JLabel();
+        affTest = new JLabel();
         affTest.setFont(new Font("Dialog",2,16));
         affTest.setText("Nom d'utilisateur :");
         affTest.setBounds(10, 15, 180, 40);
@@ -109,7 +121,14 @@ public class UI extends JFrame implements ActionListener{
         textDate.setBounds(150,60,50,50);
         panneauAnalyse.add(textDate);
         
-        boxDate = new JComboBox();
+        boxDate = new JComboBox(allDate);
+        if(queryDB.getUser().contains(user)){
+            DateFormat df =  new SimpleDateFormat("DD/MM/YYYY HH:mm:ss");
+            allDate[0]=null;
+            for(int i=1;i<=queryDB.getListDate(user).size();i++){
+                allDate[i] = df.format(queryDB.getListDate(user).get(i-1));//i ou i-1
+            }
+        }
         boxDate.setBounds(200,70,200,30);
         panneauAnalyse.add(boxDate);
         
@@ -159,6 +178,19 @@ public class UI extends JFrame implements ActionListener{
         panneauGraphe.add(bg_Graph3);
         
         /**
+         * Mon panneau paint
+         */
+        panneauPaint = new JPanel(){
+            public void paint(Graphics g){
+                g.drawString(user,150,10);
+                g.drawString(avgCycle, 150, 40);
+                g.drawString(avgParadox, 150, 70);
+            }
+        };
+        panneauInfo.add(panneauPaint);
+        
+        
+        /**
          * Mon panneau Global
          */
         JPanel panneauGlobal = new JPanel();
@@ -172,23 +204,39 @@ public class UI extends JFrame implements ActionListener{
         
         setContentPane(panneauGlobal);
         
-        setVisible(true);
+        
         
         myButtonCherche.addActionListener(this);
         myButtonEffacer.addActionListener(this);
-        boxDate.addActionListener(this);     
+        boxDate.addActionListener(this); 
+
+        setVisible(true);
     }
     
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == myButtonCherche){
+            user = affTest.getText();
+            if(queryDB.getUser().contains(user)){
+                Time avgCycleA = queryDB.getMoyenCycle(user);
+                Time avgParadoxA = queryDB.getMoyenParadox(user);
+                DateFormat df =  new SimpleDateFormat("HH:mm:ss");
+                avgCycle = df.format(avgCycleA);
+                avgParadox = df.format(avgParadoxA);
+                panneauPaint.repaint();
+            }
             
         }else if(e.getSource() == myButtonEffacer){
-        
-        }else if(e.getSource() == boxDate){
+            effacer();
         }
-
     }
+
+    public void effacer(){
+        affTest.setText(null);
+        user = null;
+        avgCycle = null;
+        avgParadox = null;
     
+    }
     
     
     public static void main (String args[]) {
