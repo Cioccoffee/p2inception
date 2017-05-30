@@ -94,7 +94,7 @@ public class UI extends JFrame implements ActionListener{
         
         JPanel bg_Analyse = new JPanel();
         bg_Analyse.setLayout(null);
-        bg_Analyse.setBounds(150,10,250,40);
+        bg_Analyse.setBounds(150,20,250,40);
         bg_Analyse.setBackground(Color.white);
         panneauAnalyse.add(bg_Analyse);
         
@@ -106,16 +106,16 @@ public class UI extends JFrame implements ActionListener{
         
         JLabel textDate = new JLabel("Date :");
         textDate.setFont(new Font("Dialog",2,14));
-        textDate.setBounds(150,50,50,50);
+        textDate.setBounds(150,60,50,50);
         panneauAnalyse.add(textDate);
         
         boxDate = new JComboBox();
-        boxDate.setBounds(200,60,200,30);
+        boxDate.setBounds(200,70,200,30);
         panneauAnalyse.add(boxDate);
         
         JPanel bg_Graph = new JPanel();
         bg_Graph.setLayout(null);
-        bg_Graph.setBounds(20,100,540,250);
+        bg_Graph.setBounds(20,120,540,250);
         bg_Graph.setBackground(Color.white);
         panneauAnalyse.add(bg_Graph);
         
