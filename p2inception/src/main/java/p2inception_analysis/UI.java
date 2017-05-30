@@ -6,13 +6,17 @@
 package p2inception_analysis;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 /**
  *
  * @author SHU Yuting
  */
-public class UI extends JFrame{
-    private final int LARGEUR_FENETRE = 800; 
-    private final int HAUTEUR_FENETRE = 600;
+public class UI extends JFrame implements ActionListener{
+    private final int LARGEUR_FENETRE = 885; 
+    private final int HAUTEUR_FENETRE = 630;
+    private JButton myButtonCherche;
+    private JButton myButtonEffacer;
+    private JComboBox boxDate;
     
     public UI(){
         setTitle("Interface");
@@ -30,7 +34,7 @@ public class UI extends JFrame{
          * Mon panneau 1
          */
         JPanel panneauUser = new JPanel();
-        panneauUser.setBounds(50,20,700,70);
+        panneauUser.setBounds(10,10,580,70);
         panneauUser.setLayout(null);
         panneauUser.setBackground(Color.green);
         
@@ -46,19 +50,19 @@ public class UI extends JFrame{
         textUsername.setBackground(Color.white);
         panneauUser.add(textUsername);
         
-        JButton myButtonCherche = new JButton("Chercher");
-        myButtonCherche.setBounds(500, 5, 90, 60);
+        myButtonCherche = new JButton("Chercher");
+        myButtonCherche.setBounds(380, 5, 90, 60);
         panneauUser.add(myButtonCherche);
-        
-        JButton myButtonEffacer = new JButton("Effacer");
-        myButtonEffacer.setBounds(600, 5, 90, 60);
-        panneauUser.add(myButtonEffacer);
+ 
+        myButtonEffacer = new JButton("Effacer");
+        myButtonEffacer.setBounds(480, 5, 90, 60);
+        panneauUser.add(myButtonEffacer);    
         
         /**
          * Mon panneau 2
          */
         JPanel panneauInfo  = new JPanel();
-        panneauInfo.setBounds(150,100,500,100);
+        panneauInfo.setBounds(10,90,580,100);
         panneauInfo.setLayout(null);
         panneauInfo.setBackground(Color.YELLOW);
         
@@ -85,61 +89,74 @@ public class UI extends JFrame{
          */
         JPanel panneauAnalyse = new JPanel();
         panneauAnalyse.setLayout(null);
-        panneauAnalyse.setBounds(30,220,300,330);
+        panneauAnalyse.setBounds(10,200,580,390);
         panneauAnalyse.setBackground(Color.LIGHT_GRAY);
         
         JPanel bg_Analyse = new JPanel();
         bg_Analyse.setLayout(null);
-        bg_Analyse.setBounds(20,20,250,70);
+        bg_Analyse.setBounds(150,10,250,40);
         bg_Analyse.setBackground(Color.white);
         panneauAnalyse.add(bg_Analyse);
         
         JLabel textAnalyse = new JLabel();
-        textAnalyse.setFont(new Font("Dialog",2,26));
+        textAnalyse.setFont(new Font("Dialog",2,22));
         textAnalyse.setText("ANALYSE");
-        textAnalyse.setBounds(60,10,200,50);
+        textAnalyse.setBounds(75,0,150,40);
         bg_Analyse.add(textAnalyse);
         
         JLabel textDate = new JLabel("Date :");
         textDate.setFont(new Font("Dialog",2,14));
-        textDate.setBounds(20,100,50,50);
+        textDate.setBounds(150,50,50,50);
         panneauAnalyse.add(textDate);
         
-        JComboBox boxDate = new JComboBox();
-        boxDate.setBounds(70,110,200,30);
+        boxDate = new JComboBox();
+        boxDate.setBounds(200,60,200,30);
         panneauAnalyse.add(boxDate);
+        
+        JPanel bg_Graph = new JPanel();
+        bg_Graph.setLayout(null);
+        bg_Graph.setBounds(20,100,540,250);
+        bg_Graph.setBackground(Color.white);
+        panneauAnalyse.add(bg_Graph);
+        
         
         /**
          * Mon panneau 4
          */
-        JPanel panneauGraph = new JPanel();
-        panneauGraph.setLayout(null);
-        panneauGraph.setBounds(365,220,400,330);
-        panneauGraph.setBackground(Color.ORANGE);
+        JPanel panneauGraphe = new JPanel();
+        panneauGraphe.setLayout(null);
+        panneauGraphe.setBounds(600,10,270,580);
+        panneauGraphe.setBackground(Color.orange);
         
-        JButton buttonTemps = new JButton("Temps");
-        buttonTemps.setBounds(20, 40, 80, 60);
-        panneauGraph.add(buttonTemps);
+        JLabel textTemp = new JLabel("Température");
+        textTemp.setBounds(90, 10, 80, 20);
+        panneauGraphe.add(textTemp);
         
-        JButton buttonPouls = new JButton("Pouls");
-        buttonPouls.setBounds(20, 140, 80, 60);
-        panneauGraph.add(buttonPouls);
+        JLabel textPouls = new JLabel("Pouls");
+        textPouls.setBounds(100, 200, 80, 20);
+        panneauGraphe.add(textPouls);
         
-        JButton buttonMVT = new JButton("MVT");
-        buttonMVT.setBounds(20,240,80,60);
-        panneauGraph.add(buttonMVT);
+        JLabel textMVT = new JLabel("Mouvement");
+        textMVT.setBounds(90,390,80,20);
+        panneauGraphe.add(textMVT);
+               
+        JPanel bg_Graph1 = new JPanel();
+        bg_Graph1.setLayout(null);
+        bg_Graph1.setBounds(10,10,250,180);
+        bg_Graph1.setBackground(Color.white);
+        panneauGraphe.add(bg_Graph1);
         
-        JLabel textGraph = new JLabel("GRAPHIQUE");
-        textGraph.setFont(new Font("Dialog",2,18));
-        textGraph.setBounds(185,10,150,40);
-        panneauGraph.add(textGraph);
+        JPanel bg_Graph2 = new JPanel();
+        bg_Graph2.setLayout(null);
+        bg_Graph2.setBounds(10,200,250,180);
+        bg_Graph2.setBackground(Color.white);
+        panneauGraphe.add(bg_Graph2);
         
-        JPanel bg_Graph = new JPanel();
-        bg_Graph.setLayout(null);
-        bg_Graph.setBounds(125,60,250,250);
-        bg_Graph.setBackground(Color.white);
-        panneauGraph.add(bg_Graph);
-        
+        JPanel bg_Graph3 = new JPanel();
+        bg_Graph3.setLayout(null);
+        bg_Graph3.setBounds(10,390,250,180);
+        bg_Graph3.setBackground(Color.white);
+        panneauGraphe.add(bg_Graph3);
         
         /**
          * Mon panneau Global
@@ -150,19 +167,32 @@ public class UI extends JFrame{
         panneauGlobal.setBackground(Color.white);
         panneauGlobal.add(panneauUser);
         panneauGlobal.add(panneauInfo);
-        panneauGlobal.add(panneauAnalyse);
-        panneauGlobal.add(panneauGraph);
+        panneauGlobal.add(panneauAnalyse);       
+        panneauGlobal.add(panneauGraphe);
         
         setContentPane(panneauGlobal);
         
         setVisible(true);
         
-        
-        
+        myButtonCherche.addActionListener(this);
+        myButtonEffacer.addActionListener(this);
+        boxDate.addActionListener(this);     
     }
     
+    public void actionPerformed(ActionEvent e){
+        if(e.getSource() == myButtonCherche){
+            
+        }else if(e.getSource() == myButtonEffacer){
+        
+        }else if(e.getSource() == boxDate){
+        }
+
+    }
+    
+    
+    
     public static void main (String args[]) {
-	new UI();
+	new UI();        
     }
     
 }
