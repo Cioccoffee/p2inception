@@ -42,6 +42,7 @@ public class DataInsertion {
     private PreparedStatement analyseTemp2OutStatement;
     private PreparedStatement analyseTempBothInStatement;
 
+    private PreparedStatement setAnalysisEndStatement;
 
     
     public DataInsertion(){
@@ -57,23 +58,26 @@ public class DataInsertion {
             System.out.println("Connexion établie...");
             
             // Prepared Statement
-            String insertMesureLine ="INSERT INTO Mesure (Date, Pulse, Temp1, Temp2, MaxAcc, MaxGyr, AvgAcc, AvgGyr, Username) VALUES (?,?,?,?,?,?,?,?,'Cochondinde');"; //(o°^°o)
+            String insertMesureLine ="INSERT INTO Mesure (Date, Pulse, Temp1, Temp2, MaxAcc, MaxGyr, AvgAcc, AvgGyr, Username) VALUES (?,?,?,?,?,?,?,?,?);"; //(o°^°o)
 
             String insertUsersLine ="INSERT INTO Users (Name) VALUES (?);";
 
             String insertAnalysisLine = "INSERT INTO Analysis (UserName, DateBegin, DateEnd, Cycle, Phase) VALUES (?,?,?,?,?);";
 
-            String analyseTemp1Out = "update Mesure set Temp=Temp1 where (Temp2>=39 or Temp2<=36.5) and Temp1>=36.5 and Temp1<=39 and where Date = ?;";
-            String analyseTemp2Out ="update Mesure set Temp=Temp2 where (Temp1>=39 or Temp1<=36.5) and Temp2>=36.5 and Temp2<=39 and where Date = ?;";
-            String analyseTempBothIn ="update Mesure set Temp=(Temp1+Temp2)/2.0 where Temp2>=36.5 and Temp2<=39 and Temp1>=36.5 and Temp1<=39 and where Date = ?;";
+            String analyseTemp1Out = "update Mesure set Temp=Temp1 where (Temp2>=39.0 or Temp2<=36.5) and Temp1>=36.5 and Temp1<=39.0 and  Date = ?;";
+            String analyseTemp2Out ="update Mesure set Temp=Temp2 where (Temp1>=39.0 or Temp1<=36.5) and Temp2>=36.5 and Temp2<=39.0 and  Date = ?;";
+            String analyseTempBothIn ="update Mesure set Temp=(Temp1+Temp2)/2.0 where Temp2>=36.5 and Temp2<=39.0 and Temp1>=36.5 and Temp1<=39 and  Date = ?;";
+            
+            String setAnalysisEndLine ="update Analysis set DateEnd=? where DateBegin=?"; //username ???
             
             this.insertMesureStatement = this.conn.prepareStatement(insertMesureLine);
             this.insertUsersStatement = this.conn.prepareStatement(insertUsersLine);
             this.insertAnalysisStatement = this.conn.prepareStatement(insertAnalysisLine);
             
             this.analyseTemp1OutStatement = this.conn.prepareStatement(analyseTemp1Out);
-            this.analyseTemp2OutStatement = this.conn.prepareStatement(analyseTemp1Out);
-            this.analyseTempBothInStatement = this.conn.prepareStatement(analyseTemp1Out);
+            this.analyseTemp2OutStatement = this.conn.prepareStatement(analyseTemp2Out);
+            this.analyseTempBothInStatement = this.conn.prepareStatement(analyseTempBothIn);
+            this.setAnalysisEndStatement = this.conn.prepareStatement(setAnalysisEndLine);
 
         }catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace(System.err);
@@ -82,7 +86,7 @@ public class DataInsertion {
     }
     
     
-    public int addMesure(Date date,int pulse, double temp1, double temp2, float MaxAcc, float MaxGyr, float AvgAcc, float AvgGyr) {
+    public int addMesure(Date date,int pulse, double temp1, double temp2, float MaxAcc, float MaxGyr, float AvgAcc, float AvgGyr, String Username) {
         try {
             this.insertMesureStatement.setTimestamp(1, new Timestamp(date.getTime())  );
             this.insertMesureStatement.setInt(2, pulse);
@@ -92,7 +96,9 @@ public class DataInsertion {
             this.insertMesureStatement.setFloat(6, MaxGyr);
             this.insertMesureStatement.setFloat(7, AvgAcc);
             this.insertMesureStatement.setFloat(8, AvgGyr);
+            this.insertMesureStatement.setString(9, Username);
             return this.insertMesureStatement.executeUpdate();
+            
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
             return -1;
@@ -110,7 +116,7 @@ public class DataInsertion {
             }
         }
 
-    public int addAnalysis(String username, Timestamp dateBegin, Timestamp dateEnd, int cycle, String phase) {
+    /*public int addAnalysis(String username, Timestamp dateBegin, Timestamp dateEnd, int cycle, String phase) {
             try {
                 this.insertAnalysisStatement.setString(1, username  );
                 this.insertAnalysisStatement.setTimestamp(2, dateBegin );
@@ -122,7 +128,51 @@ public class DataInsertion {
                 ex.printStackTrace(System.err);
                 return -1;
             }
+        }*/
+    
+     public int addAnalysis(String username, Timestamp dateBegin, int cycle, String phase) {
+            try {
+                this.insertAnalysisStatement.setString(1, username  );
+                this.insertAnalysisStatement.setTimestamp(2, dateBegin );
+                
+                this.insertAnalysisStatement.setInt(4, cycle );
+                this.insertAnalysisStatement.setString(5, phase );
+                return this.insertAnalysisStatement.executeUpdate();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+                return -1;
+            }
         }
+    
+    public int setAnalysisEnd(Timestamp end, Timestamp begin){
+        try {
+                this.setAnalysisEndStatement.setTimestamp(1,end);
+                this.setAnalysisEndStatement.setTimestamp(2,begin);
+                return this.setAnalysisEndStatement.executeUpdate();
+                
+        } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+                return -1;
+        }
+        
+        
+    }
+             
+    public int setTemp(Date date){
+        try {
+            
+            this.analyseTemp1OutStatement.setTimestamp(1, new Timestamp(date.getTime())  );
+            this.analyseTemp2OutStatement.setTimestamp(1, new Timestamp(date.getTime())  );
+            this.analyseTempBothInStatement.setTimestamp(1, new Timestamp(date.getTime())  );
+            this.analyseTemp1OutStatement.executeUpdate();
+            this.analyseTemp2OutStatement.executeUpdate();
+            return this.analyseTempBothInStatement.executeUpdate();
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.err);
+            return -1;
+        }
+    }
     
     
     public static void main(String[] args){
@@ -134,11 +184,13 @@ public class DataInsertion {
         //this.analyseTemp1OutStatement.setTimestamp(new Timestamp(this.date.getTime()));
         //this.analyseTemp1OutStatement.executeUpdate();
         
-        Query_DB query = new Query_DB();
+        /*Query_DB query = new Query_DB();
         String infos = query.getInfoMesureAll();
-        System.out.println(infos);
-        
-        
+        System.out.println(infos);*/
+        Date dateNow = new Date();
+        data_insert.addMesure(dateNow, 63, 32.5, 38, 10, 8, 2, 3, "Cochondinde");
+        data_insert.setTemp(dateNow);
+                            
     }
     
     

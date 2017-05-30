@@ -14,6 +14,7 @@ import java.util.LinkedList;
  */
 public class DataAnalysis {
     
+    private Timestamp NightBegin;
     private Timestamp SleepBegin;
     private Timestamp ParadoxalSleepBegin;
     private Timestamp ParadoxalSleepEnd;
@@ -46,16 +47,61 @@ public class DataAnalysis {
         // insert line in Analysis à chaque fois qu'on a rplacé le dates = set date à null après chq inertion
         Query_DB query = new Query_DB();
         LinkedList<AnalysedMesure> list = query.collectInfosKnimeResult();
+        //lo hacer para el user que we use = add a parameter cause else it's gonna get fucked up in counting
         DataInsertion insertData = new DataInsertion();
         
+        NightBegin = list.get(0).getDate();
+        int j = 0;
+        int k = 0;
+        int l = 0;
+        boolean night_begin = true;
         for(int i = 0; i<list.size(); i++){
+            String cluster = list.get(i).getCluster();
+            String user = list.get(i).getUsername();
+            int cycle = query.getLastCycle(user);
+            if(cluster.equals( "cluster_0")){
+                j++;
+                k = 0;
+                l = 0;
+                if(j==1){
+                    NightBegin = list.get(i).getDate();
+                    if(night_begin){
+                        cycle = 0;
+                        night_begin = false;
+                    }
+                }
+                if(j==4){
+                    cycle++;
+                    insertData.addAnalysis(user, NightBegin, cycle, "wake");
+                }
+            }else if(cluster.equals( "cluster_1")){
+                j = 0;
+                k++;
+                l = 0;
+                if(k==1){
+                   SleepBegin = list.get(i).getDate();
+                }
+                if(k==4){
+                    insertData.setAnalysisEnd(SleepBegin,NightBegin);
+                    insertData.addAnalysis(user, SleepBegin, cycle, "preparadoxal");
+                }
+            }else if(cluster.equals( "cluster_2")){
+                j = 0;
+                k = 0;
+                l++;
+                if(l==1){
+                    ParadoxalSleepBegin = list.get(i).getDate();
+                }
+                if(l==4){
+                    insertData.setAnalysisEnd(ParadoxalSleepBegin, SleepBegin) ;
+                    insertData.addAnalysis(user, ParadoxalSleepBegin, cycle, "paradoxal");
+                }
+            }
             
-            SleepBegin = list.get(0).getDate();
-            
-            for(int j = 0; j < 4; j++){
+            /*for(int j = 0; j < 4; j++){
                 
                 String cluster = list.get(i).getCluster();
-                if(cluster == "cluster_1"){
+                if(cluster.equals( "cluster_2")){
                     j++;
                     if(j==1){
                         ParadoxalSleepBegin = list.get(i).getDate();
@@ -64,13 +110,14 @@ public class DataAnalysis {
                         //parcourir pour déterminer paradoxalsleepend
                         for(int k=0; k < 4; k++){
                             String cluster2 = list.get(i).getCluster();
-                            if(cluster2 == "cluster_0"){
+                            if(cluster2.equals( "cluster_1" )){
                                 k++;
                                 if(k==1)ParadoxalSleepEnd = list.get(i).getDate();
                             
                             }else{
                                 k = 0;
                             }
+                            i++;
                         }
                         //trouver cycle
                         String user = list.get(i).getUsername();
@@ -86,12 +133,13 @@ public class DataAnalysis {
                         
                         if(i==(list.size()-1)) j=5;
                         
+                        
                     }
                 }else {
                     j = 0;
                 }
-                
-            }
+                i++;
+            }*/
             
             
         }

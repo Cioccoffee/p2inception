@@ -84,7 +84,7 @@ public class Query_DB{
     public int getLastCycle(String username){
         int cycle;
         try{
-            this.getLastCycleStatement = this.conn.prepareStatement("select Cycle from Analysis where Username = ? and DateEnd in (select max(DateEnd) from Analysis where Username = ?);");
+            this.getLastCycleStatement = this.conn.prepareStatement("select Cycle from Analysis where Username = ? and DateBegin in (select max(DateBegin) from Analysis where Username = ?);");
             getLastCycleStatement.setString(1,username);
             getLastCycleStatement.setString(2,username);
             ResultSet rs = getLastCycleStatement.executeQuery();
