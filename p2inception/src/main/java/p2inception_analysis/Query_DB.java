@@ -18,6 +18,7 @@ public class Query_DB{
     
     Statement infoMesureAll;
     Statement infosKnimeResult;
+    PreparedStatement getLastCycleStatement;
             
     /**
      * Methode pour se connecter Ã  la base ; prend en paramÃ¨tre le login et le mot de passe
@@ -79,5 +80,21 @@ public class Query_DB{
             return null;
         }
              
+    }
+    
+    public int getLastCycle(String username){
+        int cycle;
+        try{
+            this.getLastCycleStatement = this.conn.prepareStatement("select Cycle from Analysis where Username = ? and DateEnd in (select max(DateEnd) from Analysis where Username = ?);");
+            getLastCycleStatement.setString(1,username);
+            getLastCycleStatement.setString(2,username);
+            ResultSet rs = getLastCycleStatement.executeQuery();
+            cycle = rs.getInt("Cycle");
+             
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+            cycle = 0;
+        }
+        return cycle;
     }
 }
