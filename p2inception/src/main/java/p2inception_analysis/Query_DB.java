@@ -22,6 +22,7 @@ public class Query_DB{
     Statement infoUser;
     PreparedStatement getAvgCycle;
     PreparedStatement getAvgParadox;
+    PreparedStatement getTheDate;
             
     /**
      * Methode pour se connecter Ã  la base ; prend en paramÃ¨tre le login et le mot de passe
@@ -141,5 +142,22 @@ public class Query_DB{
         }
         return moyenParadox;
     }
+    
+    public LinkedList<Date> getListDate(String user){
+        LinkedList<Date> listDate = new LinkedList();
+        try{
+            getTheDate = conn.prepareStatement("select DateBegin from Analysis where Username = ? group by DateBegin;");
+            getTheDate.setString(1, user);
+            ResultSet rs = getTheDate.executeQuery();
+            while(rs.next()){
+                listDate.add(rs.getDate("DateBegin"));
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+            listDate = null;
+        }
+        return listDate;
+    }
+    
     
 }
