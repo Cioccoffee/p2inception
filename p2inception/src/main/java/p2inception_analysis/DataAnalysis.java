@@ -73,8 +73,13 @@ public class DataAnalysis {
                             }
                         }
                         //trouver cycle
-                        insertData.addAnalysis(list.get(i).getUsername(), SleepBegin, ParadoxalSleepBegin, cycle, "preparadoxal");
-                        insertData.addAnalysis(list.get(i).getUsername(), ParadoxalSleepBegin, ParadoxalSleepEnd, cycle, "paradoxal");
+                        String user = list.get(i).getUsername();
+                        int cycle = query.getLastCycle(user);
+                        cycle++;
+                        
+                        insertData.addAnalysis(user, SleepBegin, ParadoxalSleepBegin, cycle, "wake");
+                        insertData.addAnalysis(user, SleepBegin, ParadoxalSleepBegin, cycle, "preparadoxal");
+                        insertData.addAnalysis(user, ParadoxalSleepBegin, ParadoxalSleepEnd, cycle, "paradoxal");
                         
                         //insertion des dates = 2 insertions car 2 'phases'
                         SleepBegin = ParadoxalSleepEnd;
