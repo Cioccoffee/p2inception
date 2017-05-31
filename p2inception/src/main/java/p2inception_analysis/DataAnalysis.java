@@ -40,13 +40,13 @@ public class DataAnalysis {
          }
     }
     
-    public void analyse(){
+    public void analyse(String username){
         
         //call getInfosKnimeResult
         // parcourir la liste et récupérer les dates de début et fin = remplir des variables
         // insert line in Analysis à chaque fois qu'on a rplacé le dates = set date à null après chq inertion
         Query_DB query = new Query_DB();
-        LinkedList<AnalysedMesure> list = query.collectInfosKnimeResult();
+        LinkedList<AnalysedMesure> list = query.collectInfosKnimeResult(username);
         //lo hacer para el user que we use = add a parameter cause else it's gonna get fucked up in counting
         DataInsertion insertData = new DataInsertion();
         
@@ -59,6 +59,8 @@ public class DataAnalysis {
             String cluster = list.get(i).getCluster();
             String user = list.get(i).getUsername();
             int cycle = query.getLastCycle(user);
+            String lastPhase = query.getLastPhase(user);
+            
             if(cluster.equals( "cluster_0")){
                 j++;
                 k = 0;
@@ -83,6 +85,7 @@ public class DataAnalysis {
                 }
                 if(k==4){
                     insertData.setAnalysisEnd(SleepBegin,NightBegin);
+                    if(lastPhase.equals("paradoxal")) cycle++;
                     insertData.addAnalysis(user, SleepBegin, cycle, "preparadoxal");
                 }
             }else if(cluster.equals( "cluster_2")){
@@ -145,6 +148,11 @@ public class DataAnalysis {
         }
         
         
+    }
+    
+    public void main(String[] args){
+        final DataAnalysis data_analysis = new DataAnalysis();
+        data_analysis.analyse("WhiteRat1");
     }
             
 }
