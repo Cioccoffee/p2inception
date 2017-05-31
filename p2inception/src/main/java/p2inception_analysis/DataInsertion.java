@@ -62,7 +62,7 @@ public class DataInsertion {
 
             String insertUsersLine ="INSERT INTO Users (Name) VALUES (?);";
 
-            String insertAnalysisLine = "INSERT INTO Analysis (UserName, DateBegin, DateEnd, Cycle, Phase) VALUES (?,?,?,?,?);";
+            String insertAnalysisLine = "INSERT INTO Analysis (UserName, DateBegin, Cycle, Phase) VALUES (?,?,?,?);";
 
             String analyseTemp1Out = "update Mesure set Temp=Temp1 where (Temp2>=39.0 or Temp2<=36.5) and Temp1>=36.5 and Temp1<=39.0 and  Date = ?;";
             String analyseTemp2Out ="update Mesure set Temp=Temp2 where (Temp1>=39.0 or Temp1<=36.5) and Temp2>=36.5 and Temp2<=39.0 and  Date = ?;";
@@ -135,8 +135,8 @@ public class DataInsertion {
                 this.insertAnalysisStatement.setString(1, username  );
                 this.insertAnalysisStatement.setTimestamp(2, dateBegin );
                 
-                this.insertAnalysisStatement.setInt(4, cycle );
-                this.insertAnalysisStatement.setString(5, phase );
+                this.insertAnalysisStatement.setInt(3, cycle );
+                this.insertAnalysisStatement.setString(4, phase );
                 return this.insertAnalysisStatement.executeUpdate();
             } catch (SQLException ex) {
                 ex.printStackTrace(System.err);

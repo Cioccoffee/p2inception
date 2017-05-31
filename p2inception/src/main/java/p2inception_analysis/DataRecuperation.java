@@ -81,7 +81,7 @@ public class DataRecuperation {
         try {
 
             final ArduinoUsbChannel vcpChannel = new ArduinoUsbChannel(port);
-
+            DataInsertion data_insert = new DataInsertion();
             Thread readingThread = new Thread(new Runnable() {
 
                 public void run() {
@@ -93,7 +93,7 @@ public class DataRecuperation {
                         while((line = vcpInput.readLine())!= null){
                             dataRecup.read(line);
 
-                            DataInsertion data_insert = new DataInsertion();
+                            
                             data_insert.addMesure(dataRecup.date, dataRecup.pulse, dataRecup.temp1, dataRecup.temp2, dataRecup.maxAcc, dataRecup.maxGyr, dataRecup.avgAcc, dataRecup.avgGyr, "Cochondinde");
                             data_insert.setTemp(dataRecup.date);
                             System.out.println("data : " + dataRecup.date +" "+ dataRecup.pulse +" "+dataRecup.temp1+" "+dataRecup.temp2+" "+dataRecup.maxAcc+" "+dataRecup.maxGyr+" "+dataRecup.avgAcc+" "+dataRecup.avgGyr );
