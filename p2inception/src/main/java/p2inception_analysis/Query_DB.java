@@ -86,17 +86,17 @@ public class Query_DB{
     }
     
     public int getLastCycle(String username){
-        int cycle;
+        int cycle =0;
         try{
             this.getLastCycleStatement = this.conn.prepareStatement("select Cycle from Analysis where Username = ? and DateBegin in (select max(DateBegin) from Analysis where Username = ?);");
             getLastCycleStatement.setString(1,username);
             getLastCycleStatement.setString(2,username);
             ResultSet rs = getLastCycleStatement.executeQuery();
-            cycle = rs.getInt("Cycle");
+            if(rs.next())cycle = rs.getInt("Cycle");
              
         }catch(SQLException ex){
             ex.printStackTrace(System.err);
-            cycle = 0;
+            //cycle = 0;
         }
         return cycle;
     }
@@ -108,7 +108,7 @@ public class Query_DB{
            getLastPhaseStatement.setString(1,username);
            getLastPhaseStatement.setString(2,username);
            ResultSet rs = getLastPhaseStatement.executeQuery();
-           phase = rs.getString("Phase");
+           if(rs.next())phase = rs.getString("Phase");
         }catch(SQLException ex){
            phase ="wake";
         }
