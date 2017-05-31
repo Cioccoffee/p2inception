@@ -61,7 +61,7 @@ public class DataAnalysis {
             int cycle = query.getLastCycle(user);
             String lastPhase = query.getLastPhase(user);
             
-            if(cluster.equals( "cluster_0")){
+            if(cluster.equals( "cluster_2")){
                 j++;
                 k = 0;
                 l = 0;
@@ -88,7 +88,7 @@ public class DataAnalysis {
                     if(lastPhase.equals("paradoxal")) cycle++;
                     insertData.addAnalysis(user, SleepBegin, cycle, "preparadoxal");
                 }
-            }else if(cluster.equals( "cluster_2")){
+            }else if(cluster.equals( "cluster_0")){
                 j = 0;
                 k = 0;
                 l++;
@@ -150,7 +150,7 @@ public class DataAnalysis {
         
     }
     
-    public void main(String[] args){
+    public static void main(String[] args){
         final DataAnalysis data_analysis = new DataAnalysis();
         data_analysis.analyse("WhiteRat1");
     }
