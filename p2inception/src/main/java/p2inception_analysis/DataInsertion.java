@@ -53,8 +53,9 @@ public class DataInsertion {
             System.out.println("Driver trouvé...");
 
             //Création d'une connexion sur la base de donnée
-            this.conn = DriverManager.getConnection("jdbc:mysql://nas-caranton.dynv6.net:995/p2inception", "lucie","r@xt9Wkba9z4N$9g");
+            this.conn = DriverManager.getConnection("jdbc:mysql://nas-caranton.dynv6.net:995/p2inception?autoReconnect=true", "lucie","r@xt9Wkba9z4N$9g");
             //this.conn = DriverManager.getConnection("jdbc:mysql://localhost:8889/" + bd, compte, motDePasse);
+            
             System.out.println("Connexion établie...");
             
             // Prepared Statement
