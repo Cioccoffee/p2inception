@@ -17,8 +17,9 @@ public class Query_DB{
     private ResultSet res;
     
     Statement infoMesureAll;
-    Statement infosKnimeResult;
+    PreparedStatement infosKnimeResult;
     PreparedStatement getLastCycleStatement;
+    PreparedStatement getLastPhaseStatement;
     Statement infoUser;
     PreparedStatement getAvgCycle;
     PreparedStatement getAvgParadox;
@@ -63,16 +64,18 @@ public class Query_DB{
         return infos;
     }
     
-    public LinkedList<AnalysedMesure> collectInfosKnimeResult(){
+    public LinkedList<AnalysedMesure> collectInfosKnimeResult(String username){
         LinkedList<AnalysedMesure> list = new LinkedList<AnalysedMesure>();
         try{
-                infosKnimeResult = conn.createStatement();
-                ResultSet rs = infosKnimeResult.executeQuery("select * from MesureKnimeResult;");
+                infosKnimeResult = conn.prepareStatement("select * from MesureKnimeResult where Username = ?;");
+                infosKnimeResult.setString(1,username);
+                ResultSet rs = infosKnimeResult.executeQuery();
+                
                 while(rs.next()){
                     Timestamp date = rs.getTimestamp("Date");
-                    String username = rs.getString("Username");
+                    String user = rs.getString("Username");
                     String cluster =  rs.getString("Cluster");
-                    list.add(new AnalysedMesure(date, cluster, username));
+                    list.add(new AnalysedMesure(date, cluster, user));
 
                 }
                 return list;
@@ -96,6 +99,20 @@ public class Query_DB{
             cycle = 0;
         }
         return cycle;
+    }
+    
+    public String getLastPhase(String username){
+        String phase = "";
+        try{
+           this.getLastPhaseStatement = this.conn.prepareStatement("select Phase from Analysis where Username = ? and DateBegin in (select max(DateBegin) from Analysis where Username = ?);");
+           getLastPhaseStatement.setString(1,username);
+           getLastPhaseStatement.setString(2,username);
+           ResultSet rs = getLastPhaseStatement.executeQuery();
+           phase = rs.getString("Phase");
+        }catch(SQLException ex){
+           phase ="wake";
+        }
+        return phase;
     }
     
     public LinkedList<String> getUser(){
