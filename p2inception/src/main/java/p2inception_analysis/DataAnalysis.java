@@ -84,7 +84,7 @@ public class DataAnalysis {
                    SleepBegin = list.get(i).getDate();
                 }
                 if(k==4){
-                    insertData.setAnalysisEnd(SleepBegin,NightBegin);
+                    insertData.setAnalysisEnd(SleepBegin,NightBegin, user);
                     if(lastPhase.equals("paradoxal")) cycle++;
                     insertData.addAnalysis(user, SleepBegin, cycle, "preparadoxal");
                 }
@@ -96,7 +96,7 @@ public class DataAnalysis {
                     ParadoxalSleepBegin = list.get(i).getDate();
                 }
                 if(l==4){
-                    insertData.setAnalysisEnd(ParadoxalSleepBegin, SleepBegin) ;
+                    insertData.setAnalysisEnd(ParadoxalSleepBegin, SleepBegin, user) ;
                     insertData.addAnalysis(user, ParadoxalSleepBegin, cycle, "paradoxal");
                 }
             }
@@ -146,7 +146,9 @@ public class DataAnalysis {
             
             
         }
-        
+        int lastCycle = query.getLastCycle(username);
+        String lastPhase = query.getLastPhase(username);
+        insertData.setAnalysisEnd(lastCycle,lastPhase,username);
         
     }
     
