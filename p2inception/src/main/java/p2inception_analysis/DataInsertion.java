@@ -43,6 +43,7 @@ public class DataInsertion {
     private PreparedStatement analyseTempBothInStatement;
 
     private PreparedStatement setAnalysisEndStatement;
+    private PreparedStatement setAnalysisEndStatement2;
 
     
     public DataInsertion(){
@@ -69,7 +70,8 @@ public class DataInsertion {
             String analyseTemp2Out ="update Mesure set Temp=Temp2 where (Temp1>=39.0 or Temp1<=36.5) and Temp2>=36.5 and Temp2<=39.0 and  Date = ?;";
             String analyseTempBothIn ="update Mesure set Temp=(Temp1+Temp2)/2.0 where Temp2>=36.5 and Temp2<=39.0 and Temp1>=36.5 and Temp1<=39 and  Date = ?;";
             
-            String setAnalysisEndLine ="update Analysis set DateEnd=? where DateBegin=?"; //username ???
+            String setAnalysisEndLine ="update Analysis set DateEnd=? where DateBegin=? and Username = ?"; 
+            String setAnalysisEndLine2 ="update Analysis set DateEnd=? where Cycle=? and Phase=? and Username = ?";
             
             this.insertMesureStatement = this.conn.prepareStatement(insertMesureLine);
             this.insertUsersStatement = this.conn.prepareStatement(insertUsersLine);
@@ -79,6 +81,7 @@ public class DataInsertion {
             this.analyseTemp2OutStatement = this.conn.prepareStatement(analyseTemp2Out);
             this.analyseTempBothInStatement = this.conn.prepareStatement(analyseTempBothIn);
             this.setAnalysisEndStatement = this.conn.prepareStatement(setAnalysisEndLine);
+            this.setAnalysisEndStatement2 = this.conn.prepareStatement(setAnalysisEndLine2);
 
         }catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace(System.err);
@@ -145,10 +148,11 @@ public class DataInsertion {
             }
         }
     
-    public int setAnalysisEnd(Timestamp end, Timestamp begin){
+    public int setAnalysisEnd(Timestamp end, Timestamp begin, String user){
         try {
                 this.setAnalysisEndStatement.setTimestamp(1,end);
                 this.setAnalysisEndStatement.setTimestamp(2,begin);
+                this.setAnalysisEndStatement.setString(3,user);
                 return this.setAnalysisEndStatement.executeUpdate();
                 
         } catch (SQLException ex) {
@@ -158,6 +162,23 @@ public class DataInsertion {
         
         
     }
+    
+    public int setAnalysisEnd(int cycle, String phase, String user){
+        try {
+                this.setAnalysisEndStatement2.setInt(1,cycle);
+                this.setAnalysisEndStatement.setString(2,phase);
+                this.setAnalysisEndStatement.setString(3,user);
+                return this.setAnalysisEndStatement.executeUpdate();
+                
+        } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+                return -1;
+        }
+        
+        
+    }
+    
+    
              
     public int setTemp(Date date){
         try {
