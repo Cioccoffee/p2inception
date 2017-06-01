@@ -18,8 +18,12 @@ import java.util.*;
 public class UI extends JFrame implements ActionListener{
     private final int LARGEUR_FENETRE = 885; 
     private final int HAUTEUR_FENETRE = 730;
+    
     private JButton myButtonCherche;
     private JButton myButtonEffacer;
+    private JButton buttonArduino;
+    private JButton buttonAnalyse;
+    
     private JComboBox boxDate;
     private JPanel panneauPaint;
     private JTextField textUsername;
@@ -227,11 +231,11 @@ public class UI extends JFrame implements ActionListener{
         textName.setBounds(180, 50, 180, 30);
         panneauLancer.add(textName);
         
-        JButton buttonArduino = new JButton("lancer l'acquisition Arduino");
+        buttonArduino = new JButton("lancer l'acquisition Arduino");
         buttonArduino.setBounds(400, 50, 200, 30);
         panneauLancer.add(buttonArduino);
         
-        JButton buttonAnalyse = new JButton("lancer l'analyse des donnees");
+        buttonAnalyse = new JButton("lancer l'analyse des donnees");
         buttonAnalyse.setBounds(620, 50, 200, 30);
         panneauLancer.add(buttonAnalyse);
         
@@ -270,7 +274,21 @@ public class UI extends JFrame implements ActionListener{
             
         }else if(e.getSource() == myButtonEffacer){
             effacer();
+        }else if(e.getSource() == buttonArduino){
+            user = textUsername.getText();
+            if( !(queryDB.getUser().contains(user)) ){
+                DataInsertion data_insert = new DataInsertion();
+                data_insert.addUser(user);
+            }
+            DataRecuperation data_recuperation = new DataRecuperation();
+            //data_recuperation.launchAcquisition(user);
+            
+        }else if(e.getSource() == buttonAnalyse){
+            DataInsertion data_insert = new DataInsertion();
+            //data_insert.analyse(user?);
+            //data_insert.updateUser();
         }
+           
     }
     
     public void effacer(){
