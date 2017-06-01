@@ -284,9 +284,9 @@ public class UI extends JFrame implements ActionListener{
             //data_recuperation.launchAcquisition(user);
             
         }else if(e.getSource() == buttonAnalyse){
-            DataInsertion data_insert = new DataInsertion();
-            //data_insert.analyse(user?);
-            //data_insert.updateUser();
+            DataAnalysis data_analysis = new DataAnalysis();
+            //data_analysis.analyse(user?);
+            //data_analysis.updateUser();
         }
            
     }
