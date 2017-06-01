@@ -17,12 +17,12 @@ import java.util.*;
  */
 public class UI extends JFrame implements ActionListener{
     private final int LARGEUR_FENETRE = 885; 
-    private final int HAUTEUR_FENETRE = 630;
+    private final int HAUTEUR_FENETRE = 730;
     private JButton myButtonCherche;
     private JButton myButtonEffacer;
     private JComboBox boxDate;
     private JPanel panneauPaint;
-    private JLabel affTest;
+    private JTextField textUsername;
     private Query_DB queryDB;
     private String user;
     private String avgCycle;
@@ -46,18 +46,18 @@ public class UI extends JFrame implements ActionListener{
          * Mon panneau 1
          */
         JPanel panneauUser = new JPanel();
-        panneauUser.setBounds(10,10,580,70);
+        panneauUser.setBounds(10,40,580,70);
         panneauUser.setLayout(null);
         panneauUser.setBackground(Color.green);
         
-        affTest = new JLabel();
+       JLabel affTest = new JLabel();
         affTest.setFont(new Font("Dialog",2,16));
         affTest.setText("Nom d'utilisateur :");
         affTest.setBounds(10, 15, 180, 40);
         affTest.setBackground(Color.white);
         panneauUser.add(affTest);
         
-        JTextField textUsername = new JTextField();
+        textUsername = new JTextField();
         textUsername.setBounds(150,15,200,40);
         textUsername.setBackground(Color.white);
         panneauUser.add(textUsername);
@@ -74,7 +74,7 @@ public class UI extends JFrame implements ActionListener{
          * Mon panneau 2
          */
         JPanel panneauInfo  = new JPanel();
-        panneauInfo.setBounds(10,90,580,100);
+        panneauInfo.setBounds(10,120,580,100);
         panneauInfo.setLayout(null);
         panneauInfo.setBackground(Color.YELLOW);
         
@@ -101,12 +101,12 @@ public class UI extends JFrame implements ActionListener{
          */
         JPanel panneauAnalyse = new JPanel();
         panneauAnalyse.setLayout(null);
-        panneauAnalyse.setBounds(10,200,580,390);
+        panneauAnalyse.setBounds(10,230,580,360);
         panneauAnalyse.setBackground(Color.LIGHT_GRAY);
         
         JPanel bg_Analyse = new JPanel();
         bg_Analyse.setLayout(null);
-        bg_Analyse.setBounds(150,20,250,40);
+        bg_Analyse.setBounds(150,10,250,40);
         bg_Analyse.setBackground(Color.white);
         panneauAnalyse.add(bg_Analyse);
         
@@ -118,23 +118,23 @@ public class UI extends JFrame implements ActionListener{
         
         JLabel textDate = new JLabel("Date :");
         textDate.setFont(new Font("Dialog",2,14));
-        textDate.setBounds(150,60,50,50);
+        textDate.setBounds(150,50,50,50);
         panneauAnalyse.add(textDate);
         
-        boxDate = new JComboBox(allDate);
-        if(queryDB.getUser().contains(user)){
+        boxDate = new JComboBox();
+        /**if(queryDB.getUser().contains(user)){
             DateFormat df =  new SimpleDateFormat("DD/MM/YYYY HH:mm:ss");
             allDate[0]=null;
             for(int i=1;i<=queryDB.getListDate(user).size();i++){
                 allDate[i] = df.format(queryDB.getListDate(user).get(i-1));//i ou i-1
             }
-        }
-        boxDate.setBounds(200,70,200,30);
+        }*/
+        boxDate.setBounds(200,60,200,30);
         panneauAnalyse.add(boxDate);
         
         JPanel bg_Graph = new JPanel();
         bg_Graph.setLayout(null);
-        bg_Graph.setBounds(20,120,540,250);
+        bg_Graph.setBounds(20,100,540,240);
         bg_Graph.setBackground(Color.white);
         panneauAnalyse.add(bg_Graph);
         
@@ -189,6 +189,51 @@ public class UI extends JFrame implements ActionListener{
         };
         panneauInfo.add(panneauPaint);
         
+        /**
+         * Mon panneauUtilise
+         */
+        JPanel panneauUtilise = new JPanel();
+        panneauUtilise.setBounds(0,100,LARGEUR_FENETRE,HAUTEUR_FENETRE-100);
+        panneauUtilise.setLayout(null);
+        panneauUtilise.setBackground(Color.PINK);
+        panneauUtilise.add(panneauUser);
+        panneauUtilise.add(panneauInfo);
+        panneauUtilise.add(panneauAnalyse);       
+        panneauUtilise.add(panneauGraphe);
+        
+        JLabel textCherche = new JLabel("Chercher votre resultats:");
+        textCherche.setFont(new Font("Dialog",2,20));
+        textCherche.setBounds(10,10,300,20);
+        panneauUtilise.add(textCherche);
+        
+        /**
+         * Mon panneau lancer
+         */
+        JPanel panneauLancer = new JPanel();
+        panneauLancer.setLayout(null);
+        panneauLancer.setBackground(Color.LIGHT_GRAY);
+        panneauLancer.setBounds(0,0,885,100);
+
+        JLabel textLancer = new JLabel("Utiliser notre systeme:");
+        textLancer.setFont(new Font("Dialog",2,20));
+        textLancer.setBounds(10,10,300,20);
+        panneauLancer.add(textLancer);
+        
+        JLabel textEntrer = new JLabel("Entrer votre nom,svp:");
+        textEntrer.setBounds(40,55,200,20);
+        panneauLancer.add(textEntrer);
+        
+        JTextField textName = new JTextField();
+        textName.setBounds(180, 50, 180, 30);
+        panneauLancer.add(textName);
+        
+        JButton buttonArduino = new JButton("lancer l'acquisition Arduino");
+        buttonArduino.setBounds(400, 50, 200, 30);
+        panneauLancer.add(buttonArduino);
+        
+        JButton buttonAnalyse = new JButton("lancer l'analyse des donnees");
+        buttonAnalyse.setBounds(620, 50, 200, 30);
+        panneauLancer.add(buttonAnalyse);
         
         /**
          * Mon panneau Global
@@ -197,10 +242,8 @@ public class UI extends JFrame implements ActionListener{
         panneauGlobal.setBounds(0, 0, LARGEUR_FENETRE,HAUTEUR_FENETRE);
         panneauGlobal.setLayout(null);
         panneauGlobal.setBackground(Color.white);
-        panneauGlobal.add(panneauUser);
-        panneauGlobal.add(panneauInfo);
-        panneauGlobal.add(panneauAnalyse);       
-        panneauGlobal.add(panneauGraphe);
+        panneauGlobal.add(panneauUtilise);
+        panneauGlobal.add(panneauLancer);
         
         setContentPane(panneauGlobal);
         
@@ -208,14 +251,14 @@ public class UI extends JFrame implements ActionListener{
         
         myButtonCherche.addActionListener(this);
         myButtonEffacer.addActionListener(this);
-        boxDate.addActionListener(this); 
+        //boxDate.addActionListener(this); 
 
         setVisible(true);
     }
     
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == myButtonCherche){
-            user = affTest.getText();
+            user = textUsername.getText();
             if(queryDB.getUser().contains(user)){
                 Time avgCycleA = queryDB.getMoyenCycle(user);
                 Time avgParadoxA = queryDB.getMoyenParadox(user);
@@ -229,9 +272,9 @@ public class UI extends JFrame implements ActionListener{
             effacer();
         }
     }
-
+    
     public void effacer(){
-        affTest.setText(null);
+        textUsername.setText(null);
         user = null;
         avgCycle = null;
         avgParadox = null;
