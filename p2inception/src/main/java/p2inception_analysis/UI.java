@@ -264,8 +264,8 @@ public class UI extends JFrame implements ActionListener{
         if(e.getSource() == myButtonCherche){
             user = textUsername.getText();
             if(queryDB.getUser().contains(user)){
-                Time avgCycleA = queryDB.getMoyenCycle(user);
-                Time avgParadoxA = queryDB.getMoyenParadox(user);
+                Time avgCycleA = queryDB.getAvgCycle(user);
+                Time avgParadoxA = queryDB.getAvgParadox(user);
                 DateFormat df =  new SimpleDateFormat("HH:mm:ss");
                 avgCycle = df.format(avgCycleA);
                 avgParadox = df.format(avgParadoxA);
@@ -301,7 +301,7 @@ public class UI extends JFrame implements ActionListener{
     
     
     public static void main (String args[]) {
-	new UI();        
+	UI ui = new UI();        
     }
     
 }
