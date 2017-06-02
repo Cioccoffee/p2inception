@@ -131,7 +131,7 @@ public class Query_DB{
         return listNom;
     }
     
-     public Time getMoyenCycle(String username){
+     public Time getAvgCycle(String username){
         Time moyenCycle= null;
         try{
             this.getAvgCycle = this.conn.prepareStatement("select AvgCycle from User where Name = ?;");
@@ -146,7 +146,7 @@ public class Query_DB{
         return moyenCycle;
     }
      
-    public Time getMoyenParadox(String username){
+    public Time getAvgParadox(String username){
         Time moyenParadox = null;
         try{
             this.getAvgParadox = this.conn.prepareStatement("select AvgParadox from User where Name = ?;");
