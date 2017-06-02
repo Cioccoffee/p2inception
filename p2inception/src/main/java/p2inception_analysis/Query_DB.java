@@ -7,7 +7,6 @@ package p2inception_analysis;
 
 import java.sql.*;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 
@@ -24,6 +23,8 @@ public class Query_DB{
     PreparedStatement getAvgCycle;
     PreparedStatement getAvgParadox;
     PreparedStatement getTheDate;
+    PreparedStatement getTemp;
+    PreparedStatement getPulse;
             
     /**
      * Methode pour se connecter Ã  la base ; prend en paramÃ¨tre le login et le mot de passe
@@ -131,7 +132,7 @@ public class Query_DB{
         return listNom;
     }
     
-     public Time getAvgCycle(String username){
+    public Time getAvgCycle(String username){
         Time moyenCycle= null;
         try{
             this.getAvgCycle = this.conn.prepareStatement("select AvgCycle from User where Name = ?;");
@@ -176,5 +177,62 @@ public class Query_DB{
         return listDate;
     }
     
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public LinkedList getTemp(String username){
+        LinkedList listTemp = new LinkedList();
+        try{
+            getTemp = conn.prepareStatement("select Temp from Mesure where Username = ?;");
+            getTemp.setString(1, username);
+            ResultSet rs = getTemp.executeQuery();
+            while(rs.next()){
+                listTemp.add(rs.getDouble("Temp"));
+            }
+
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+            getTemp = null;
+        }
+        return listTemp;
+    } 
+    
+    public LinkedList getPulse(String username){
+        LinkedList listPulse = new LinkedList();
+        try{
+            getPulse = conn.prepareStatement("select Pulse from Mesure where Username = ?;");
+            getPulse.setString(1, username);
+            ResultSet rs = getPulse.executeQuery();
+            while(rs.next()){
+                listPulse.add(rs.getInt("Pulse"));
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+            listPulse = null;
+        }
+        return listPulse;
+    }
+    
+    public LinkedList<MesureMovement> getMovement(String username){
+        LinkedList<MesureMovement> listMovement = new LinkedList();
+        try{
+            PreparedStatement getMovement = conn.prepareStatement("select MaxAcc, MaxGyr, AvgAcc, AvgGyr from Mesure where Username = ?;");
+            getMovement.setString(1, username);
+            ResultSet rs = getMovement.executeQuery();
+            while(rs.next()){
+                float MaxAcc = rs.getFloat("MacAcc");
+                float MaxGyr = rs.getFloat("MaxGyr");
+                float AvgAcc = rs.getFloat("AvgAcc");
+                float AvgGyr = rs.getFloat("AvgGyr");
+                listMovement.add(new MesureMovement(MaxAcc,MaxGyr,AvgAcc,AvgGyr));
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+            listMovement = null;
+        }
+        return listMovement;
+    }
     
 }
