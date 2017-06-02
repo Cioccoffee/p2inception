@@ -7,6 +7,8 @@ package p2inception_analysis;
 
 import java.sql.*;
 import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 
 
@@ -233,6 +235,24 @@ public class Query_DB{
             listMovement = null;
         }
         return listMovement;
+    }
+    
+    public LinkedList<String> getTime(String username){
+        LinkedList<String> listTime = new LinkedList();
+        try{
+            PreparedStatement getTime = conn.prepareStatement("select Date from Mesure where Username = ?");
+            getTime.setString(1,username);
+            ResultSet rs = getTime.executeQuery();
+            while(rs.next()){
+                DateFormat df =  new SimpleDateFormat("HH:mm:ss");
+                listTime.add(df.format(rs.getDate("Date")));
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+            listTime = null;
+        }
+        return listTime;
+    
     }
     
 }

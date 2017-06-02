@@ -7,9 +7,11 @@ package p2inception_analysis;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.sql.Time;
 import java.text.*;
 import java.util.*;
+import org.jfree.ui.RefineryUtilities;
 
 /**
  *
@@ -32,8 +34,9 @@ public class UI extends JFrame implements ActionListener{
     private String avgCycle;
     private String avgParadox;
     private String[] allDate;
+    private Courbe courbe;
     
-    public UI(){
+    public UI() throws IOException{
         setTitle("Interface");
         setLayout(null);
 	setSize(LARGEUR_FENETRE,HAUTEUR_FENETRE);
@@ -46,6 +49,19 @@ public class UI extends JFrame implements ActionListener{
         
         queryDB = new Query_DB();
         
+        //test
+        LinkedList listdonnee = new LinkedList();
+        listdonnee.add(37.0);
+        listdonnee.add(37.8);
+        listdonnee.add(36.5);
+        LinkedList listtime = new LinkedList();
+        listtime.add("11:12;50");
+        listtime.add("11:13:30");
+        listtime.add("11:15:20");
+        courbe = new Courbe(listdonnee,listtime,"user","2017-05-31","temperature","temperature-time");
+        
+        
+        
         /**
          * Mon panneau 1
          */
@@ -54,7 +70,7 @@ public class UI extends JFrame implements ActionListener{
         panneauUser.setLayout(null);
         panneauUser.setBackground(Color.green);
         
-       JLabel affTest = new JLabel();
+        JLabel affTest = new JLabel();
         affTest.setFont(new Font("Dialog",2,16));
         affTest.setText("Nom d'utilisateur :");
         affTest.setBounds(10, 15, 180, 40);
@@ -151,7 +167,7 @@ public class UI extends JFrame implements ActionListener{
         panneauGraphe.setBounds(600,10,270,580);
         panneauGraphe.setBackground(Color.orange);
         
-        JLabel textTemp = new JLabel("Température");
+        /**JLabel textTemp = new JLabel("Température");
         textTemp.setBounds(90, 10, 80, 20);
         panneauGraphe.add(textTemp);
         
@@ -161,13 +177,18 @@ public class UI extends JFrame implements ActionListener{
         
         JLabel textMVT = new JLabel("Mouvement");
         textMVT.setBounds(90,390,80,20);
-        panneauGraphe.add(textMVT);
+        panneauGraphe.add(textMVT);*/
                
         JPanel bg_Graph1 = new JPanel();
         bg_Graph1.setLayout(null);
         bg_Graph1.setBounds(10,10,250,180);
         bg_Graph1.setBackground(Color.white);
         panneauGraphe.add(bg_Graph1);
+        
+        //test
+        JLabel image = new JLabel(new ImageIcon("c:user2017-05-31temperaturetemperature-time.jpg"));
+        image.setBounds(0,0,250,180);
+        bg_Graph1.add(image);
         
         JPanel bg_Graph2 = new JPanel();
         bg_Graph2.setLayout(null);
@@ -250,9 +271,7 @@ public class UI extends JFrame implements ActionListener{
         panneauGlobal.add(panneauLancer);
         
         setContentPane(panneauGlobal);
-        
-        
-        
+
         myButtonCherche.addActionListener(this);
         myButtonEffacer.addActionListener(this);
         //boxDate.addActionListener(this); 
@@ -300,7 +319,7 @@ public class UI extends JFrame implements ActionListener{
     }
     
     
-    public static void main (String args[]) {
+    public static void main (String args[]) throws IOException {
 	UI ui = new UI();        
     }
     
