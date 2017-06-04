@@ -23,6 +23,14 @@ public class DataAnalysis {
     
     private Connection conn;
     
+    
+    private PreparedStatement calculateAvgCycleStatement;
+    private PreparedStatement calculateAvgParadoxStatement;
+    private PreparedStatement sumLucidDreamStatement;
+    private PreparedStatement getLastAnalysisDateStatement;      
+    
+    private PreparedStatement updateUserStatement;
+    
     public DataAnalysis(){
         try { 
                         
@@ -42,7 +50,8 @@ public class DataAnalysis {
     
     public void analyse(String username){
         
-        //call getInfosKnimeResult
+        //try{
+            //call getInfosKnimeResult
         // parcourir la liste et récupérer les dates de début et fin = remplir des variables
         // insert line in Analysis à chaque fois qu'on a rplacé le dates = set date à null après chq inertion
         Query_DB query = new Query_DB();
@@ -150,11 +159,72 @@ public class DataAnalysis {
         String lastPhase = query.getLastPhase(username);
         insertData.setAnalysisEnd(lastCycle,lastPhase,username);
         
+        //}catch(SQLException ex){
+            //ex.printStackTrace(System.err);
+        //}
+        
+    }
+    
+    public int updateUser(String user){
+        
+        try{
+            //faire les calculs
+            calculateAvgCycleStatement = this.conn.prepareStatement("select sum(DateEnd-DateBegin) as avgCycle from Analysis where Username = 'Richard' group by Cycle;");
+            calculateAvgParadoxStatement = this.conn.prepareStatement("select avg (DateEnd-DateBegin) as avgParadox from Analysis where Username = ? and phase = 'paradoxal';");
+            sumLucidDreamStatement = this.conn.prepareStatement("select sum(Phase) as lucidDream from Analysis where Username =  ? and Phase = 'paradoxal';");
+            getLastAnalysisDateStatement = this.conn.prepareStatement("select max(DateEnd) as lastAnalysis from Mesure where Username = ?;");
+            
+            this.calculateAvgCycleStatement.setString(1, user);
+            this.calculateAvgParadoxStatement.setString(1, user);
+            this.sumLucidDreamStatement.setString(1, user);
+            this.getLastAnalysisDateStatement.setString(1, user);
+            
+            //avgCycle
+            LinkedList cycleLengthList = new LinkedList();
+            int avgCycle = 0;
+            ResultSet rsCycle = calculateAvgCycleStatement.executeQuery();
+            while(rsCycle.next()){
+                cycleLengthList.add(rsCycle.getInt("avgCycle"));
+            }
+            
+            for(int i = 0; i < cycleLengthList.size(); i++){
+                avgCycle+= (int)cycleLengthList.get(i);
+            }
+            
+            avgCycle = avgCycle / cycleLengthList.size();
+            Timestamp avgCycleCalculated = new Timestamp(avgCycle);
+            
+            //avgParadox
+            ResultSet rsParadox = calculateAvgParadoxStatement.executeQuery();
+            Timestamp avgParadox = new Timestamp( (int) rsParadox.getInt("avgParadox"));
+            
+            //lucid dreams
+            ResultSet rsLucid = sumLucidDreamStatement.executeQuery();
+            int lucidDream = rsLucid.getInt("lucidDream");
+            
+            //last analysis
+            ResultSet rsLastAna = getLastAnalysisDateStatement.executeQuery();
+            Timestamp lastAnalysis = new Timestamp( (int) rsLastAna.getInt("lastAnalysis"));
+            
+            //insérer
+            updateUserStatement = this.conn.prepareStatement("update User set Avgcycle = ?, AvgParadox = ?, LucidDream = ?, LastAnalysis = ?  where Username = ?");
+            updateUserStatement.setTimestamp(1,avgCycleCalculated);
+            updateUserStatement.setTimestamp(2,avgParadox);
+            updateUserStatement.setInt(3,lucidDream);
+            updateUserStatement.setTimestamp(4, lastAnalysis);
+            updateUserStatement.setString(5, user);
+            
+            updateUserStatement.executeUpdate();
+            
+        }catch(SQLException ex){
+            ex.printStackTrace(System.err);
+        }
     }
     
     public static void main(String[] args){
         final DataAnalysis data_analysis = new DataAnalysis();
         data_analysis.analyse("WhiteRat1");
+        data_analysis.updateUser("WhiteRat1");
     }
             
 }
