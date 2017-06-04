@@ -135,6 +135,7 @@ public class Query_DB{
     }
     
     public Time getAvgCycle(String username){
+
         Time moyenCycle= null;
         try{
             this.getAvgCycle = this.conn.prepareStatement("select AvgCycle from User where Name = ?;");
