@@ -7,6 +7,7 @@ package p2inception_analysis;
 
 import java.sql.*;
 import java.util.LinkedList;
+import java.util.Date;
 
 /**
  *
@@ -157,7 +158,8 @@ public class DataAnalysis {
         }
         int lastCycle = query.getLastCycle(username);
         String lastPhase = query.getLastPhase(username);
-        insertData.setAnalysisEnd(lastCycle,lastPhase,username);
+        Timestamp endOfAnalysis = list.get((list.size()-1)).getDate();
+        insertData.setAnalysisEnd2(endOfAnalysis,lastCycle,lastPhase,username);
         
         //}catch(SQLException ex){
             //ex.printStackTrace(System.err);
@@ -169,10 +171,10 @@ public class DataAnalysis {
         
         try{
             //faire les calculs
-            calculateAvgCycleStatement = this.conn.prepareStatement("select sum(DateEnd-DateBegin) as avgCycle from Analysis where Username = ? group by Cycle;");
-            calculateAvgParadoxStatement = this.conn.prepareStatement("select avg (DateEnd-DateBegin) as avgParadox from Analysis where Username = ? and phase = 'paradoxal';");
+            calculateAvgCycleStatement = this.conn.prepareStatement("select sum(timestampdiff(second, DateBegin, DateEnd)) as avgCycle from Analysis where Username = ? group by Cycle;");
+            calculateAvgParadoxStatement = this.conn.prepareStatement("select avg (timestampdiff(second, DateBegin, DateEnd)) as avgParadox from Analysis where Username = ? and Phase = 'paradoxal';");
             sumLucidDreamStatement = this.conn.prepareStatement("select sum(Phase) as lucidDream from Analysis where Username =  ? and Phase = 'paradoxal';");
-            getLastAnalysisDateStatement = this.conn.prepareStatement("select max(DateEnd) as lastAnalysis from Mesure where Username = ?;");
+            getLastAnalysisDateStatement = this.conn.prepareStatement("select max(Date) as lastAnalysis from Mesure where Username = ?;");
             
             this.calculateAvgCycleStatement.setString(1, user);
             this.calculateAvgParadoxStatement.setString(1, user);
@@ -181,33 +183,37 @@ public class DataAnalysis {
             
             //avgCycle
             LinkedList cycleLengthList = new LinkedList();
-            int avgCycle = 0;
+            long avgCycle = 0;
             ResultSet rsCycle = calculateAvgCycleStatement.executeQuery();
             while(rsCycle.next()){
-                cycleLengthList.add(rsCycle.getInt("avgCycle"));
+                cycleLengthList.add(rsCycle.getLong("avgCycle"));
             }
             
             for(int i = 0; i < cycleLengthList.size(); i++){
-                avgCycle+= (int)cycleLengthList.get(i);
+                avgCycle += (long)cycleLengthList.get(i);
             }
             
-            avgCycle = avgCycle / cycleLengthList.size();
-            Timestamp avgCycleCalculated = new Timestamp(avgCycle);
+            //avgCycle = avgCycle / cycleLengthList.size();
+            Timestamp avgCycleCalculated = new Timestamp( 0,0,0,0,0, (int)(avgCycle/ cycleLengthList.size()),0);
             
             //avgParadox
             ResultSet rsParadox = calculateAvgParadoxStatement.executeQuery();
-            Timestamp avgParadox = new Timestamp( (int) rsParadox.getInt("avgParadox"));
+            rsParadox.next();
+            Timestamp avgParadox = new Timestamp(0,0,0,0,0,(int)rsParadox.getLong("avgParadox"),0);
             
             //lucid dreams
             ResultSet rsLucid = sumLucidDreamStatement.executeQuery();
+            rsLucid.next();
             int lucidDream = rsLucid.getInt("lucidDream");
             
             //last analysis
             ResultSet rsLastAna = getLastAnalysisDateStatement.executeQuery();
-            Timestamp lastAnalysis = new Timestamp( (int) rsLastAna.getInt("lastAnalysis"));
+            rsLastAna.next();
+            //Timestamp lastAnalysis = new Timestamp( (int) rsLastAna.getInt("lastAnalysis"));
+            Timestamp lastAnalysis = rsLastAna.getTimestamp("lastAnalysis");
             
             //insérer
-            updateUserStatement = this.conn.prepareStatement("update User set Avgcycle = ?, AvgParadox = ?, LucidDream = ?, LastAnalysis = ?  where Username = ?");
+            updateUserStatement = this.conn.prepareStatement("update User set AvgCycle = ?, AvgParadox = ?, LucidDream = ?, LastAnalysis = ?  where Name = ?");
             updateUserStatement.setTimestamp(1,avgCycleCalculated);
             updateUserStatement.setTimestamp(2,avgParadox);
             updateUserStatement.setInt(3,lucidDream);
@@ -221,10 +227,10 @@ public class DataAnalysis {
         }
     }
     
-    /*public static void main(String[] args){
+    public static void main(String[] args){
         final DataAnalysis data_analysis = new DataAnalysis();
         data_analysis.analyse("WhiteRat1");
         data_analysis.updateUser("WhiteRat1");
-    }*/
+    }
             
 }
