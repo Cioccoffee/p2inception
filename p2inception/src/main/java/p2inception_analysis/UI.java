@@ -280,6 +280,9 @@ public class UI extends JFrame implements ActionListener{
     }
     
     public void actionPerformed(ActionEvent e){
+        
+        
+        //BOUTON Chercher
         if(e.getSource() == myButtonCherche){
             user = textUsername.getText();
             if(queryDB.getUser().contains(user)){
@@ -291,8 +294,11 @@ public class UI extends JFrame implements ActionListener{
                 panneauPaint.repaint();
             }
             
+        //BOUTON Effacer
         }else if(e.getSource() == myButtonEffacer){
             effacer();
+            
+        //BOUTON Acquisition Arduino
         }else if(e.getSource() == buttonArduino){
             user = textUsername.getText();
             if( !(queryDB.getUser().contains(user)) ){
@@ -300,12 +306,14 @@ public class UI extends JFrame implements ActionListener{
                 data_insert.addUser(user);
             }
             DataRecuperation data_recuperation = new DataRecuperation();
-            //data_recuperation.launchAcquisition(user);
-            
+            data_recuperation.launchAcquisition(user);
+        
+        //BOUTON Analyse
         }else if(e.getSource() == buttonAnalyse){
+            user = textUsername.getText();
             DataAnalysis data_analysis = new DataAnalysis();
-            //data_analysis.analyse(user?);
-            //data_analysis.updateUser();
+            data_analysis.analyse(user);
+            data_analysis.updateUser(user);
         }
            
     }
