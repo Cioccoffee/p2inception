@@ -163,7 +163,7 @@ public class Query_DB{
         return moyenParadox;
     }
     
-    public LinkedList<Date> getListDate(String user){
+    public LinkedList<Date> getListDate(String user){//listDate java,datebegin sql;
         LinkedList<Date> listDate = new LinkedList();
         try{
             getTheDate = conn.prepareStatement("select DateBegin from Analysis where Username = ? group by DateBegin;");
@@ -184,11 +184,12 @@ public class Query_DB{
      * @param user
      * @return
      */
-    public LinkedList getTemp(String username){
+    public LinkedList getTemp(String username,String date){//corriger
         LinkedList listTemp = new LinkedList();
         try{
-            getTemp = conn.prepareStatement("select Temp from Mesure where Username = ?;");
+            getTemp = conn.prepareStatement("select Temp from Mesure where Username = ? and Date = ?% ;");//?
             getTemp.setString(1, username);
+            getTemp.setString(2,date);//?
             ResultSet rs = getTemp.executeQuery();
             while(rs.next()){
                 listTemp.add(rs.getDouble("Temp"));
@@ -201,7 +202,7 @@ public class Query_DB{
         return listTemp;
     } 
     
-    public LinkedList getPulse(String username){
+    public LinkedList getPulse(String username,String date){
         LinkedList listPulse = new LinkedList();
         try{
             getPulse = conn.prepareStatement("select Pulse from Mesure where Username = ?;");
@@ -217,7 +218,7 @@ public class Query_DB{
         return listPulse;
     }
     
-    public LinkedList<MesureMovement> getMovement(String username){
+    public LinkedList<MesureMovement> getMovement(String username,String date){
         LinkedList<MesureMovement> listMovement = new LinkedList();
         try{
             PreparedStatement getMovement = conn.prepareStatement("select MaxAcc, MaxGyr, AvgAcc, AvgGyr from Mesure where Username = ?;");
@@ -237,11 +238,12 @@ public class Query_DB{
         return listMovement;
     }
     
-    public LinkedList<String> getTime(String username){
+    public LinkedList<String> getTime(String username,String date){
         LinkedList<String> listTime = new LinkedList();
         try{
-            PreparedStatement getTime = conn.prepareStatement("select Date from Mesure where Username = ?");
+            PreparedStatement getTime = conn.prepareStatement("select Date from Mesure where Username = ? and Date > '? 11:59:59' and Date < '? 12:00:00' ");
             getTime.setString(1,username);
+            getTime.setString(2, date);
             ResultSet rs = getTime.executeQuery();
             while(rs.next()){
                 DateFormat df =  new SimpleDateFormat("HH:mm:ss");

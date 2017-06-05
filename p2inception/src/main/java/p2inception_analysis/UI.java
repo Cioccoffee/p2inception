@@ -30,6 +30,14 @@ public class UI extends JFrame implements ActionListener{
     
     private JPanel panneauPaint;
     
+    private JPanel bg_Graph1;
+    private JPanel bg_Graph2;
+    private JPanel bg_Graph3;
+    
+    private JLabel imageTemp;
+    private JLabel imagePouls;
+    private JLabel imageMVT;
+    
     private JTextField textUsername; //panneau de recherche
     private JTextField textName; //panneau d'acquisition
     
@@ -38,6 +46,7 @@ public class UI extends JFrame implements ActionListener{
     private String user;
     private String avgCycle;
     private String avgParadox;
+    private String selectDate;
     
     private String[] allDate;
     
@@ -57,7 +66,7 @@ public class UI extends JFrame implements ActionListener{
         queryDB = new Query_DB();
         
         //test
-        LinkedList listdonnee = new LinkedList();
+        /**LinkedList listdonnee = new LinkedList();
         listdonnee.add(37.0);
         listdonnee.add(37.8);
         listdonnee.add(36.5);
@@ -65,8 +74,8 @@ public class UI extends JFrame implements ActionListener{
         listtime.add("11:12;50");
         listtime.add("11:13:30");
         listtime.add("11:15:20");
-        courbe = new Courbe(listdonnee,listtime,"user","2017-05-31","temperature","temperature-time");
-        
+        courbe = new Courbe(listdonnee,listtime,"user","2017-05-31","temperature","temperature-time");*/
+       
         
         
         /**
@@ -149,13 +158,6 @@ public class UI extends JFrame implements ActionListener{
         panneauAnalyse.add(textDate);
         
         boxDate = new JComboBox();
-        /**if(queryDB.getUser().contains(user)){
-            DateFormat df =  new SimpleDateFormat("DD/MM/YYYY HH:mm:ss");
-            allDate[0]=null;
-            for(int i=1;i<=queryDB.getListDate(user).size();i++){
-                allDate[i] = df.format(queryDB.getListDate(user).get(i-1));//i ou i-1
-            }
-        }*/
         boxDate.setBounds(200,60,200,30);
         panneauAnalyse.add(boxDate);
         
@@ -186,24 +188,25 @@ public class UI extends JFrame implements ActionListener{
         textMVT.setBounds(90,390,80,20);
         panneauGraphe.add(textMVT);*/
                
-        JPanel bg_Graph1 = new JPanel();
+        bg_Graph1 = new JPanel();
         bg_Graph1.setLayout(null);
         bg_Graph1.setBounds(10,10,250,180);
         bg_Graph1.setBackground(Color.white);
         panneauGraphe.add(bg_Graph1);
         
         //test
-        JLabel image = new JLabel(new ImageIcon("c:user2017-05-31temperaturetemperature-time.jpg"));
+        /**JLabel image = new JLabel(new ImageIcon("c:user2017-05-31temperature-time.jpg"));
         image.setBounds(0,0,250,180);
-        bg_Graph1.add(image);
+        bg_Graph1.add(image);*/
         
-        JPanel bg_Graph2 = new JPanel();
+        
+        bg_Graph2 = new JPanel();
         bg_Graph2.setLayout(null);
         bg_Graph2.setBounds(10,200,250,180);
         bg_Graph2.setBackground(Color.white);
         panneauGraphe.add(bg_Graph2);
         
-        JPanel bg_Graph3 = new JPanel();
+        bg_Graph3 = new JPanel();
         bg_Graph3.setLayout(null);
         bg_Graph3.setBounds(10,390,250,180);
         bg_Graph3.setBackground(Color.white);
@@ -302,6 +305,12 @@ public class UI extends JFrame implements ActionListener{
                 avgCycle = df.format(avgCycleA);
                 avgParadox = df.format(avgParadoxA);
                 panneauPaint.repaint();
+                //JComboBox
+                DateFormat df2 =  new SimpleDateFormat("YYYY-MM-DD");
+                allDate[0]=null;
+                for(int i=1;i<=queryDB.getListDate(user).size();i++){
+                    allDate[i] = df2.format(queryDB.getListDate(user).get(i-1));
+                }
             }
             
         //BOUTON Effacer
@@ -333,9 +342,62 @@ public class UI extends JFrame implements ActionListener{
         user = null;
         avgCycle = null;
         avgParadox = null;
-    
+        bg_Graph1.removeAll();
+        bg_Graph2.removeAll();
+        bg_Graph3.removeAll();
     }
     
+    public void tracerCourbeTemp() throws IOException{
+        selectDate = (String)boxDate.getSelectedItem();
+        LinkedList listTemp = queryDB.getTemp(user,selectDate);
+        LinkedList listTime = queryDB.getTime(user,selectDate);
+        Courbe courbeTemp = new Courbe(listTemp,listTime,user,selectDate,"Temperature","Temperature-time");
+        
+        String name = user + selectDate + "temperature-time";
+        imageTemp = new JLabel(new ImageIcon("c:"+ name + ".jpg"));
+        imageTemp.setBounds(0,0,250,180);
+        bg_Graph1.add(imageTemp);
+    }
+    
+    public void tracerCourbePouls() throws IOException{
+        selectDate = (String)boxDate.getSelectedItem();
+        LinkedList listPouls = queryDB.getPulse(user,selectDate);
+        LinkedList listTime = queryDB.getTime(user,selectDate);
+        Courbe courbePouls = new Courbe(listPouls,listTime,user,selectDate,"Pouls","Pouls-time");
+        
+        String name = user + selectDate + "Pouls-time";
+        imagePouls = new JLabel(new ImageIcon("c:"+ name + ".jpg"));
+        imagePouls.setBounds(0,0,250,180);
+        bg_Graph2.add(imagePouls);
+    }
+    
+    public void tracerCourbeMVT(){
+        LinkedList listTime = queryDB.getTime(user,selectDate);
+        LinkedList<MesureMovement> listMVT = queryDB.getMovement(user,selectDate);
+        LinkedList listMaxAcc = new LinkedList();
+        LinkedList listMaxGyr = new LinkedList();
+        LinkedList listAvgAcc = new LinkedList();
+        LinkedList listAvgGyr = new LinkedList();
+        Iterator it = listMVT.iterator();
+        int i = 0;
+        while(it.hasNext()){
+            listMaxAcc.add(listMVT.get(i).getMaxAcc());
+            listMaxGyr.add(listMVT.get(i).getMaxGyr());
+            listAvgAcc.add(listMVT.get(i).getAvgAcc());
+            listAvgGyr.add(listMVT.get(i).getAvgGyr());
+            i++;
+        }
+        Courbe courbeMVT = new Courbe(listMaxAcc,listMaxGyr,listAvgAcc,listAvgGyr,listTime,
+                user,selectDate,"mouvement","MaxAcc","MaxGyr","AvgAcc","AvgGyr","mouvement-time");
+        String name = user + selectDate + "mouvement-time";
+        imageMVT = new JLabel(new ImageIcon("c:"+ name + ".jpg"));
+        imageMVT.setBounds(0,0,250,180);
+        bg_Graph3.add(imageMVT);
+    }
+    
+    public void tracerCourbeAnalyse(){
+    
+    }
     
     public static void main (String args[]) throws IOException {
 	UI ui = new UI();        
