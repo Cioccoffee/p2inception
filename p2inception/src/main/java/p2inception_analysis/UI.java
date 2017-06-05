@@ -100,10 +100,12 @@ public class UI extends JFrame implements ActionListener{
         
         myButtonCherche = new JButton("Chercher");
         myButtonCherche.setBounds(380, 5, 90, 60);
+        myButtonCherche.addActionListener(this);
         panneauUser.add(myButtonCherche);
  
         myButtonEffacer = new JButton("Effacer");
         myButtonEffacer.setBounds(480, 5, 90, 60);
+        myButtonEffacer.addActionListener(this);
         panneauUser.add(myButtonEffacer);    
         
         /**
@@ -284,8 +286,7 @@ public class UI extends JFrame implements ActionListener{
         
         setContentPane(panneauGlobal);
 
-        myButtonCherche.addActionListener(this);
-        myButtonEffacer.addActionListener(this);
+        
         
         //boxDate.addActionListener(this); 
 
