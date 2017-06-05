@@ -27,13 +27,20 @@ public class UI extends JFrame implements ActionListener{
     private JButton buttonAnalyse;
     
     private JComboBox boxDate;
+    
     private JPanel panneauPaint;
-    private JTextField textUsername;
+    
+    private JTextField textUsername; //panneau de recherche
+    private JTextField textName; //panneau d'acquisition
+    
     private Query_DB queryDB;
+    
     private String user;
     private String avgCycle;
     private String avgParadox;
+    
     private String[] allDate;
+    
     private Courbe courbe;
     
     public UI() throws IOException{
@@ -63,7 +70,7 @@ public class UI extends JFrame implements ActionListener{
         
         
         /**
-         * Mon panneau 1
+         * Mon panneau 1 : panneauUser pour la recherche de résultats
          */
         JPanel panneauUser = new JPanel();
         panneauUser.setBounds(10,40,580,70);
@@ -91,7 +98,7 @@ public class UI extends JFrame implements ActionListener{
         panneauUser.add(myButtonEffacer);    
         
         /**
-         * Mon panneau 2
+         * Mon panneau 2 : panneauInfo (résumé de l'utilisateur)
          */
         JPanel panneauInfo  = new JPanel();
         panneauInfo.setBounds(10,120,580,100);
@@ -232,7 +239,7 @@ public class UI extends JFrame implements ActionListener{
         panneauUtilise.add(textCherche);
         
         /**
-         * Mon panneau lancer
+         * Mon panneau 4 : lancer l'acquisition
          */
         JPanel panneauLancer = new JPanel();
         panneauLancer.setLayout(null);
@@ -248,16 +255,18 @@ public class UI extends JFrame implements ActionListener{
         textEntrer.setBounds(40,55,200,20);
         panneauLancer.add(textEntrer);
         
-        JTextField textName = new JTextField();
+        textName = new JTextField();
         textName.setBounds(180, 50, 180, 30);
         panneauLancer.add(textName);
         
         buttonArduino = new JButton("lancer l'acquisition Arduino");
         buttonArduino.setBounds(400, 50, 200, 30);
+        buttonArduino.addActionListener(this);
         panneauLancer.add(buttonArduino);
         
         buttonAnalyse = new JButton("lancer l'analyse des donnees");
         buttonAnalyse.setBounds(620, 50, 200, 30);
+        buttonAnalyse.addActionListener(this);
         panneauLancer.add(buttonAnalyse);
         
         /**
@@ -274,6 +283,7 @@ public class UI extends JFrame implements ActionListener{
 
         myButtonCherche.addActionListener(this);
         myButtonEffacer.addActionListener(this);
+        
         //boxDate.addActionListener(this); 
 
         setVisible(true);
@@ -300,7 +310,7 @@ public class UI extends JFrame implements ActionListener{
             
         //BOUTON Acquisition Arduino
         }else if(e.getSource() == buttonArduino){
-            user = textUsername.getText();
+            user = textName.getText();
             if( !(queryDB.getUser().contains(user)) ){
                 DataInsertion data_insert = new DataInsertion();
                 data_insert.addUser(user);
@@ -310,7 +320,7 @@ public class UI extends JFrame implements ActionListener{
         
         //BOUTON Analyse
         }else if(e.getSource() == buttonAnalyse){
-            user = textUsername.getText();
+            user = textName.getText();
             DataAnalysis data_analysis = new DataAnalysis();
             data_analysis.analyse(user);
             data_analysis.updateUser(user);
