@@ -169,7 +169,7 @@ public class DataAnalysis {
         
         try{
             //faire les calculs
-            calculateAvgCycleStatement = this.conn.prepareStatement("select sum(DateEnd-DateBegin) as avgCycle from Analysis where Username = 'Richard' group by Cycle;");
+            calculateAvgCycleStatement = this.conn.prepareStatement("select sum(DateEnd-DateBegin) as avgCycle from Analysis where Username = ? group by Cycle;");
             calculateAvgParadoxStatement = this.conn.prepareStatement("select avg (DateEnd-DateBegin) as avgParadox from Analysis where Username = ? and phase = 'paradoxal';");
             sumLucidDreamStatement = this.conn.prepareStatement("select sum(Phase) as lucidDream from Analysis where Username =  ? and Phase = 'paradoxal';");
             getLastAnalysisDateStatement = this.conn.prepareStatement("select max(DateEnd) as lastAnalysis from Mesure where Username = ?;");
