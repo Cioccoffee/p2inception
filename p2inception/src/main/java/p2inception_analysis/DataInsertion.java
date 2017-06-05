@@ -163,11 +163,12 @@ public class DataInsertion {
         
     }
     
-    public int setAnalysisEnd(int cycle, String phase, String user){
+    public int setAnalysisEnd2(Timestamp end, int cycle, String phase, String user){
         try {
-                this.setAnalysisEndStatement2.setInt(1,cycle);
-                this.setAnalysisEndStatement.setString(2,phase);
-                this.setAnalysisEndStatement.setString(3,user);
+                this.setAnalysisEndStatement2.setTimestamp(1,end);
+                this.setAnalysisEndStatement2.setInt(2,cycle);
+                this.setAnalysisEndStatement2.setString(3,phase);
+                this.setAnalysisEndStatement2.setString(4,user);
                 return this.setAnalysisEndStatement.executeUpdate();
                 
         } catch (SQLException ex) {
