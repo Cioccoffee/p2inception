@@ -331,7 +331,7 @@ public class UI extends JFrame implements ActionListener{
         }else if(e.getSource() == buttonAnalyse){
             user = textName.getText();
             DataAnalysis data_analysis = new DataAnalysis();
-            data_analysis.analyse(user);
+            //data_analysis.analyse(user);
             data_analysis.updateUser(user);
         }
            
