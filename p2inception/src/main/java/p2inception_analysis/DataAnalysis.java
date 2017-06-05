@@ -165,7 +165,7 @@ public class DataAnalysis {
         
     }
     
-    public int updateUser(String user){
+    public void updateUser(String user){
         
         try{
             //faire les calculs
@@ -221,10 +221,10 @@ public class DataAnalysis {
         }
     }
     
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         final DataAnalysis data_analysis = new DataAnalysis();
         data_analysis.analyse("WhiteRat1");
         data_analysis.updateUser("WhiteRat1");
-    }
+    }*/
             
 }
