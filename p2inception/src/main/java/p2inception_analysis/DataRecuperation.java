@@ -48,7 +48,8 @@ public class DataRecuperation {
     
 
     
-    public static void main( String[] args )
+    //public static void main( String[] args )
+            public void launchAcquisition(String user)
     {
         final Console console = new Console();
         
@@ -94,7 +95,7 @@ public class DataRecuperation {
                             dataRecup.read(line);
 
                             
-                            data_insert.addMesure(dataRecup.date, dataRecup.pulse, dataRecup.temp1, dataRecup.temp2, dataRecup.maxAcc, dataRecup.maxGyr, dataRecup.avgAcc, dataRecup.avgGyr, "Cochondinde");
+                            data_insert.addMesure(dataRecup.date, dataRecup.pulse, dataRecup.temp1, dataRecup.temp2, dataRecup.maxAcc, dataRecup.maxGyr, dataRecup.avgAcc, dataRecup.avgGyr, user);
                             data_insert.setTemp(dataRecup.date);
                             System.out.println("data : " + dataRecup.date +" "+ dataRecup.pulse +" "+dataRecup.temp1+" "+dataRecup.temp2+" "+dataRecup.maxAcc+" "+dataRecup.maxGyr+" "+dataRecup.avgAcc+" "+dataRecup.avgGyr );
 
