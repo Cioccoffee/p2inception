@@ -197,7 +197,7 @@ public class DataInsertion {
     }
     
     
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         
         
         DataInsertion data_insert = new DataInsertion();
@@ -209,11 +209,11 @@ public class DataInsertion {
         /*Query_DB query = new Query_DB();
         String infos = query.getInfoMesureAll();
         System.out.println(infos);*/
-        Date dateNow = new Date();
+        /*Date dateNow = new Date();
         data_insert.addMesure(dateNow, 63, 32.5, 38, 10, 8, 2, 3, "Cochondinde");
         data_insert.setTemp(dateNow);
                             
-    }
+    }*/
     
     
     
