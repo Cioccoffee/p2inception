@@ -165,14 +165,16 @@ public class Query_DB{
         return moyenParadox;
     }
     
-    public LinkedList<Date> getListDate(String user){//listDate java,datebegin sql;
-        LinkedList<Date> listDate = new LinkedList();
+    public LinkedList<Timestamp> getListDate(String user){//listDate java,datebegin sql;
+        
+        LinkedList<Timestamp >listDate = new LinkedList<>();
         try{
             getTheDate = conn.prepareStatement("select DateBegin from Analysis where Username = ?;");
             getTheDate.setString(1, user);
             ResultSet rs = getTheDate.executeQuery();
             while(rs.next()){
-                listDate.add(new Date(rs.getTimestamp("DateBegin").getTime()));
+                //listDate.add(new Date(rs.getTimestamp("DateBegin").getTime()));
+                listDate.add(rs.getTimestamp("DateBegin"));
             }
         }catch(SQLException ex){
             ex.printStackTrace(System.err);
