@@ -326,7 +326,7 @@ public class UI extends JFrame implements ActionListener,ItemListener{
     	//BOUTON Chercher
     	if(e.getSource() == myButtonCherche){
         	user = textUsername.getText();
-                boxDate.addItem("");
+                //boxDate.addItem("2001-01-01 21:30:00");
                 //LinkedList<Date> dateList = new LinkedList<Date>();
                 LinkedList<Timestamp> dateList = new LinkedList<>();
         	if(queryDB.getUser().contains(user)){
@@ -348,8 +348,7 @@ public class UI extends JFrame implements ActionListener,ItemListener{
                 
                 dateList = queryDB.getListDate(user);
                 for(int i=0; i<dateList.size() ;i++){
-                    
-                    boxDate.addItem((String)df2.format( new Date(dateList.get(i).getTime()) ) );
+                    boxDate.addItem(df2.format( new Date(dateList.get(i).getTime()) ) );
                 }
                 
                 repaint();
@@ -411,7 +410,7 @@ public class UI extends JFrame implements ActionListener,ItemListener{
     	LinkedList listPouls = queryDB.getPulse(user,dateTS);
     	LinkedList listTime = queryDB.getTime(user,dateTS);
     	Courbe courbePouls = new Courbe(listPouls,listTime,user,date,"Pouls","Pouls-time");
-   	 
+   	
     	String name = user + date + "Pouls-time";
     	imagePouls = new JLabel(new ImageIcon("c:"+ name + ".jpg"));
     	imagePouls.setBounds(0,0,250,180);
@@ -450,6 +449,7 @@ public class UI extends JFrame implements ActionListener,ItemListener{
             if(e.getStateChange() == ItemEvent.SELECTED){  
                 date = (String)e.getItem();
                 dateTS = Timestamp.valueOf(date);
+                //dateTS = new Timestamp((new Date(date)).getTime());
                 try {
                     
                     tracerCourbeTemp();
