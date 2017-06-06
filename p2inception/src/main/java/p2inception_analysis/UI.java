@@ -340,10 +340,11 @@ public class UI extends JFrame implements ActionListener,ItemListener{
                 
                      //JComboBox
                     DateFormat df2 =  new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
-                    allDate[0]=null;
+                    allDate[0] = "2017-03-04 14:08:24";
                     boxDate.addItem(allDate[0]);
-                    for(int i=1;i<=queryDB.getListDate(user).size();i++){
-                        allDate[i] = df2.format(queryDB.getListDate(user).get(i-1));
+                    LinkedList dateList = queryDB.getListDate(user);
+                    for(int i=1; i<=dateList.size() ;i++){
+                        allDate[i] = df2.format(dateList.get(i-1));
                         boxDate.addItem(allDate[i]);
                     }
                     repaint();
