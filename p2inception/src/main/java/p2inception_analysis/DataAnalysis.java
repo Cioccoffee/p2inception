@@ -209,7 +209,7 @@ public class DataAnalysis {
             //last analysis
             ResultSet rsLastAna = getLastAnalysisDateStatement.executeQuery();
             rsLastAna.next();
-            //Timestamp lastAnalysis = new Timestamp( (int) rsLastAna.getInt("lastAnalysis"));
+            
             Timestamp lastAnalysis = rsLastAna.getTimestamp("lastAnalysis");
             
             //insérer
@@ -227,10 +227,6 @@ public class DataAnalysis {
         }
     }
     
-    public static void main(String[] args){
-        final DataAnalysis data_analysis = new DataAnalysis();
-        data_analysis.analyse("WhiteRat1");
-        data_analysis.updateUser("WhiteRat1");
-    }
+    
             
 }
