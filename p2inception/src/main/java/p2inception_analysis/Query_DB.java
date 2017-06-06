@@ -168,11 +168,11 @@ public class Query_DB{
     public LinkedList<Date> getListDate(String user){//listDate java,datebegin sql;
         LinkedList<Date> listDate = new LinkedList();
         try{
-            getTheDate = conn.prepareStatement("select DateBegin from Analysis where Username = ? group by DateBegin;");
+            getTheDate = conn.prepareStatement("select DateBegin from Analysis where Username = ?;");
             getTheDate.setString(1, user);
             ResultSet rs = getTheDate.executeQuery();
             while(rs.next()){
-                listDate.add(rs.getDate("DateBegin"));
+                listDate.add(new Date(rs.getTimestamp("DateBegin").getTime()));
             }
         }catch(SQLException ex){
             ex.printStackTrace(System.err);
