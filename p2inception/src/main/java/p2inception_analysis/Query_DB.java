@@ -140,6 +140,7 @@ public class Query_DB{
             this.getAvgCycle = this.conn.prepareStatement("select AvgCycle from User where Name = ?;");
             getAvgCycle.setString(1,username);
             ResultSet rs = getAvgCycle.executeQuery();
+            rs.next();
             moyenCycle = rs.getTime("AvgCycle");
 
         }catch(SQLException ex){
@@ -155,6 +156,7 @@ public class Query_DB{
             this.getAvgParadox = this.conn.prepareStatement("select AvgParadox from User where Name = ?;");
             getAvgParadox.setString(1,username);
             ResultSet rs = getAvgParadox.executeQuery();
+            rs.next();
             moyenParadox = rs.getTime("AvgParadox");
 
         }catch(SQLException ex){
@@ -187,9 +189,10 @@ public class Query_DB{
     public LinkedList getTemp(String username,String date){//corriger
         LinkedList listTemp = new LinkedList();
         try{
-            getTemp = conn.prepareStatement("select Temp from Mesure where Username = ? and Date = ?% ;");//?
+            getTemp = conn.prepareStatement("select Temp from Mesure where Username = ? and Date = ? ;");//?
             getTemp.setString(1, username);
             getTemp.setString(2,date);//?
+            
             ResultSet rs = getTemp.executeQuery();
             while(rs.next()){
                 listTemp.add(rs.getDouble("Temp"));
