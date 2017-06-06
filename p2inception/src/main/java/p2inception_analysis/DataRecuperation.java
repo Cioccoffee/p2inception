@@ -76,7 +76,7 @@ public class DataRecuperation {
 
         } while (port == null);
         
-        port = "COM4";
+        port = "COM3";
         
         console.println("Connection au Port " + port);
         try {
@@ -171,9 +171,9 @@ public class DataRecuperation {
             //System.out.println(data[0]);
             int t1 = Integer.parseInt(data[0]);
             
-            temp1 = t1/10.0;
+            temp1 = t1/100.0;
             int t2 = Integer.parseInt(data[1]);
-            temp2 = t2/10.0;
+            temp2 = t2/100.0;
             maxAcc = Float.parseFloat(data[2]);
             maxGyr = Float.parseFloat(data[3]);
             avgAcc = Float.parseFloat(data[4]);
