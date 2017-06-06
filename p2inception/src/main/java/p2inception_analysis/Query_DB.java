@@ -186,12 +186,13 @@ public class Query_DB{
      * @param user
      * @return
      */
-    public LinkedList getTemp(String username,String date){//corriger
+    public LinkedList getTemp(String username,Timestamp date){
         LinkedList listTemp = new LinkedList();
         try{
-            getTemp = conn.prepareStatement("select Temp from Mesure where Username = ? and Date = ? ;");//?
+            getTemp = conn.prepareStatement("select Temp from Mesure where Username = ? and Date = ?  and Date >= DATE_ADD(?,INTERVAL 21 HOUR ) and Date <= DATE_ADD(?,INTERVAL 38 HOUR);");
             getTemp.setString(1, username);
-            getTemp.setString(2,date);//?
+            getTemp.setTimestamp(2,date);
+            getTemp.setTimestamp(3,date);
             
             ResultSet rs = getTemp.executeQuery();
             while(rs.next()){
@@ -205,11 +206,13 @@ public class Query_DB{
         return listTemp;
     } 
     
-    public LinkedList getPulse(String username,String date){
+    public LinkedList getPulse(String username,Timestamp date){
         LinkedList listPulse = new LinkedList();
         try{
-            getPulse = conn.prepareStatement("select Pulse from Mesure where Username = ?;");
+            getPulse = conn.prepareStatement("select Pulse from Mesure where Username = ?  and Date >= DATE_ADD(?,INTERVAL 21 HOUR ) and Date <= DATE_ADD(?,INTERVAL 38 HOUR);");
             getPulse.setString(1, username);
+            getPulse.setTimestamp(2,date);
+            getPulse.setTimestamp(3,date);
             ResultSet rs = getPulse.executeQuery();
             while(rs.next()){
                 listPulse.add(rs.getInt("Pulse"));
@@ -221,11 +224,13 @@ public class Query_DB{
         return listPulse;
     }
     
-    public LinkedList<MesureMovement> getMovement(String username,String date){
+    public LinkedList<MesureMovement> getMovement(String username,Timestamp date){
         LinkedList<MesureMovement> listMovement = new LinkedList();
         try{
-            PreparedStatement getMovement = conn.prepareStatement("select MaxAcc, MaxGyr, AvgAcc, AvgGyr from Mesure where Username = ?;");
+            PreparedStatement getMovement = conn.prepareStatement("select MaxAcc, MaxGyr, AvgAcc, AvgGyr from Mesure where Username = ? and Date >= DATE_ADD(?,INTERVAL 21 HOUR ) and Date <= DATE_ADD(?,INTERVAL 38 HOUR);");
             getMovement.setString(1, username);
+            getMovement.setTimestamp(2,date);
+            getMovement.setTimestamp(3,date);
             ResultSet rs = getMovement.executeQuery();
             while(rs.next()){
                 float MaxAcc = rs.getFloat("MacAcc");
@@ -241,12 +246,13 @@ public class Query_DB{
         return listMovement;
     }
     
-    public LinkedList<String> getTime(String username,String date){
+    public LinkedList<String> getTime(String username,Timestamp date){
         LinkedList<String> listTime = new LinkedList();
         try{
-            PreparedStatement getTime = conn.prepareStatement("select Date from Mesure where Username = ? and Date > '? 11:59:59' and Date < '? 12:00:00' ");
+            PreparedStatement getTime = conn.prepareStatement("select Date from Mesure where Username = ? and Date >= DATE_ADD(?,INTERVAL 21 HOUR ) and Date <= DATE_ADD(?,INTERVAL 38 HOUR)");
             getTime.setString(1,username);
-            getTime.setString(2, date);
+            getTime.setTimestamp(2, date);
+            getTime.setTimestamp(3, date);
             ResultSet rs = getTime.executeQuery();
             while(rs.next()){
                 DateFormat df =  new SimpleDateFormat("HH:mm:ss");
