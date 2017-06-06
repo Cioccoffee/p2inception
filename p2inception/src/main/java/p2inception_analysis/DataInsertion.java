@@ -41,6 +41,8 @@ public class DataInsertion {
     private PreparedStatement analyseTemp1OutStatement;
     private PreparedStatement analyseTemp2OutStatement;
     private PreparedStatement analyseTempBothInStatement;
+    private PreparedStatement analyseTempBothOutStatement1;
+    private PreparedStatement analyseTempBothOutStatement2;
 
     private PreparedStatement setAnalysisEndStatement;
     private PreparedStatement setAnalysisEndStatement2;
@@ -62,13 +64,15 @@ public class DataInsertion {
             // Prepared Statement
             String insertMesureLine ="INSERT INTO Mesure (Date, Pulse, Temp1, Temp2, MaxAcc, MaxGyr, AvgAcc, AvgGyr, Username) VALUES (?,?,?,?,?,?,?,?,?);"; //(o°^°o)
 
-            String insertUsersLine ="INSERT INTO Users (Name) VALUES (?);";
+            String insertUsersLine ="INSERT INTO User (Name) VALUES (?);";
 
             String insertAnalysisLine = "INSERT INTO Analysis (UserName, DateBegin, Cycle, Phase) VALUES (?,?,?,?);";
 
-            String analyseTemp1Out = "update Mesure set Temp=Temp1 where (Temp2>=39.0 or Temp2<=36.5) and Temp1>=36.5 and Temp1<=39.0 and  Date = ?;";
-            String analyseTemp2Out ="update Mesure set Temp=Temp2 where (Temp1>=39.0 or Temp1<=36.5) and Temp2>=36.5 and Temp2<=39.0 and  Date = ?;";
-            String analyseTempBothIn ="update Mesure set Temp=(Temp1+Temp2)/2.0 where Temp2>=36.5 and Temp2<=39.0 and Temp1>=36.5 and Temp1<=39 and  Date = ?;";
+            String analyseTemp1Out = "update Mesure set Temp=Temp1 where (Temp2>=40.0 or Temp2<=35.0) and Temp1>=35.0 and Temp1<=40.0 and  Date = ?;";
+            String analyseTemp2Out ="update Mesure set Temp=Temp2 where (Temp1>=40.0 or Temp1<=35.0) and Temp2>=35.0 and Temp2<=40.0 and  Date = ?;";
+            String analyseTempBothIn ="update Mesure set Temp=(Temp1+Temp2)/2.0 where Temp2>=35.0 and Temp2<=40.0 and Temp1>=35.0 and Temp1<=40.0 and  Date = ?;";
+            String analyseTempBothOut1 ="update Mesure set Temp=Temp1 where (Temp2<=35.0 or Temp2>=40.0) and (Temp1>=40.0 or Temp1<=35.0) and abs(36.5-Temp2)>abs(36.5-Temp1) and  Date = ?;";
+            String analyseTempBothOut2 ="update Mesure set Temp=Temp2 where (Temp2<=35.0 or Temp2>=40.0) and (Temp1>=40.0 or Temp1<=35.0) and abs(36.5-Temp1)>abs(36.5-Temp2) and  Date = ?;";
             
             String setAnalysisEndLine ="update Analysis set DateEnd=? where DateBegin=? and Username = ?"; 
             String setAnalysisEndLine2 ="update Analysis set DateEnd=? where Cycle=? and Phase=? and Username = ?";
@@ -187,8 +191,13 @@ public class DataInsertion {
             this.analyseTemp1OutStatement.setTimestamp(1, new Timestamp(date.getTime())  );
             this.analyseTemp2OutStatement.setTimestamp(1, new Timestamp(date.getTime())  );
             this.analyseTempBothInStatement.setTimestamp(1, new Timestamp(date.getTime())  );
+            this.analyseTempBothOutStatement1.setTimestamp(1, new Timestamp(date.getTime())  );
+            this.analyseTempBothOutStatement2.setTimestamp(1, new Timestamp(date.getTime())  );
+            
             this.analyseTemp1OutStatement.executeUpdate();
             this.analyseTemp2OutStatement.executeUpdate();
+            this.analyseTempBothOutStatement1.executeUpdate();
+            this.analyseTempBothOutStatement2.executeUpdate();
             return this.analyseTempBothInStatement.executeUpdate();
             
         } catch (SQLException ex) {
