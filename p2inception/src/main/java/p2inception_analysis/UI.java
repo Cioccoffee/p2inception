@@ -305,13 +305,14 @@ public class UI extends JFrame implements ActionListener{
                 DateFormat df =  new SimpleDateFormat("HH:mm:ss");
                 avgCycle = df.format(avgCycleA);
                 avgParadox = df.format(avgParadoxA);
+                
                 panneauPaint.repaint();
                 //JComboBox
-                DateFormat df2 =  new SimpleDateFormat("YYYY-MM-DD");
+                /*DateFormat df2 =  new SimpleDateFormat("YYYY-MM-DD");
                 allDate[0]=null;
                 for(int i=1;i<=queryDB.getListDate(user).size();i++){
                     allDate[i] = df2.format(queryDB.getListDate(user).get(i-1));
-                }
+                }*/
             }
             
         //BOUTON Effacer
@@ -332,7 +333,7 @@ public class UI extends JFrame implements ActionListener{
         }else if(e.getSource() == buttonAnalyse){
             user = textName.getText();
             DataAnalysis data_analysis = new DataAnalysis();
-            //data_analysis.analyse(user);
+            data_analysis.analyse(user);
             data_analysis.updateUser(user);
         }
            
