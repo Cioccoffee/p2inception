@@ -9,15 +9,18 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jfree.ui.RefineryUtilities;
  
 /**
  *
  * @author SHU Yuting
  */
-public class UI extends JFrame implements ActionListener{
+public class UI extends JFrame implements ActionListener,ItemListener{
 	private final int LARGEUR_FENETRE = 885;
 	private final int HAUTEUR_FENETRE = 730;
     
@@ -49,11 +52,13 @@ public class UI extends JFrame implements ActionListener{
 	private String user;
 	private String avgCycle;
 	private String avgParadox;
-	private String selectDate;
+
     
 	private String[] allDate;
-    
+        private Timestamp dateTS;
+        private String date;
 	private Courbe courbe;
+
     
 	public UI() throws IOException{
     	setTitle("Interface");
@@ -311,10 +316,8 @@ public class UI extends JFrame implements ActionListener{
     	panneauGlobal.add(panneauLancer);
    	 
     	setContentPane(panneauGlobal);
- 
-   	 
-   	 
-    	//boxDate.addActionListener(this);
+
+    	boxDate.addItemListener(this);
  
     	setVisible(true);
 	}
@@ -326,39 +329,44 @@ public class UI extends JFrame implements ActionListener{
     	if(e.getSource() == myButtonCherche){
         	user = textUsername.getText();
         	if(queryDB.getUser().contains(user)){
-            	Time avgCycleA = queryDB.getAvgCycle(user);
-            	Time avgParadoxA = queryDB.getAvgParadox(user);
-            	DateFormat df =  new SimpleDateFormat("HH:mm:ss");
-            	avgCycle = df.format(avgCycleA);
-            	avgParadox = df.format(avgParadoxA);
-            	Info1.setText(user);
-            	Info2.setText(avgCycle);
-            	Info3.setText(avgParadox);
-            	repaint();
+                    Time avgCycleA = queryDB.getAvgCycle(user);
+                    Time avgParadoxA = queryDB.getAvgParadox(user);
+                    DateFormat df =  new SimpleDateFormat("HH:mm:ss");
+                    avgCycle = df.format(avgCycleA);
+                    avgParadox = df.format(avgParadoxA);
+                    Info1.setText(user);
+                    Info2.setText(avgCycle);
+                    Info3.setText(avgParadox);
+                
+                     //JComboBox
+                    DateFormat df2 =  new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+                    allDate[0]=null;
+                    boxDate.addItem(allDate[0]);
+                    for(int i=1;i<=queryDB.getListDate(user).size();i++){
+                        allDate[i] = df2.format(queryDB.getListDate(user).get(i-1));
+                        boxDate.addItem(allDate[i]);
+                    }
+                    repaint();
         	}
-            	//JComboBox
-            	/*DateFormat df2 =  new SimpleDateFormat("YYYY-MM-DD");
-            	allDate[0]=null;
-            	for(int i=1;i<=queryDB.getListDate(user).size();i++){
-                	allDate[i] = df2.format(queryDB.getListDate(user).get(i-1));
-            	}
-            	*/
-         	 
+                /**boxDate.addItem(null);
+            	boxDate.addItem("2017-12-31 00:00:00");
+                boxDate.addItem("2017-12-30 00:00:00");*/
+                
            	 
        	 
        	 
     	//BOUTON Effacer
     	}else if(e.getSource() == myButtonEffacer){
-        	effacer();
+            effacer();
        	 
     	//BOUTON Acquisition Arduino
     	}else if(e.getSource() == buttonArduino){
-        	user = textName.getText();
+                user = textName.getText();
         	if( !(queryDB.getUser().contains(user)) ){
             	DataInsertion data_insert = new DataInsertion();
             	data_insert.addUser(user);
         	}
-        	DataRecuperation data_recuperation = new DataRecuperationa();
+        	DataRecuperation data_recuperation = new DataRecuperation();
         	data_recuperation.launchAcquisition(user);
    	 
     	//BOUTON Analyse
@@ -372,46 +380,47 @@ public class UI extends JFrame implements ActionListener{
 	}
     
 	public void effacer(){
-    	textUsername.setText(null);
-    	user = null;
-    	avgCycle = null;
-    	avgParadox = null;
-    	Info1.setText(user);
-    	Info2.setText(avgCycle);
-    	Info3.setText(avgParadox);
-    	bg_Graph1.removeAll();
-    	bg_Graph2.removeAll();
-    	bg_Graph3.removeAll();
-    	repaint();
+            textUsername.setText(null);
+            user = null;
+            avgCycle = null;
+            avgParadox = null;
+            Info1.setText(user);
+            Info2.setText(avgCycle);
+            Info3.setText(avgParadox);
+            boxDate.removeAllItems();
+            bg_Graph1.removeAll();
+            bg_Graph2.removeAll();
+            bg_Graph3.removeAll();
+            repaint();
 	}
-    
+        
+        
+        
 	public void tracerCourbeTemp() throws IOException{
-    	selectDate = (String)boxDate.getSelectedItem();
-    	//LinkedList listTemp = queryDB.getTemp(user,selectDate);
-    	LinkedList listTime = queryDB.getTime(user,selectDate);
-   	// Courbe courbeTemp = new Courbe(listTemp,listTime,user,selectDate,"Temperature","Temperature-time");
+            LinkedList listTemp = queryDB.getTemp(user,dateTS);
+            LinkedList listTime = queryDB.getTime(user,dateTS);
+            Courbe courbeTemp = new Courbe(listTemp,listTime,user,date,"Temperature","Temperature-time");
    	 
-    	String name = user + selectDate + "temperature-time";
-    	imageTemp = new JLabel(new ImageIcon("c:"+ name + ".jpg"));
-    	imageTemp.setBounds(0,0,250,180);
-    	bg_Graph1.add(imageTemp);
+            String name = user + date + "temperature-time";
+            imageTemp = new JLabel(new ImageIcon("c:"+ name + ".jpg"));
+            imageTemp.setBounds(0,0,250,180);
+            bg_Graph1.add(imageTemp);
 	}
     
 	public void tracerCourbePouls() throws IOException{
-    	selectDate = (String)boxDate.getSelectedItem();
-    	LinkedList listPouls = queryDB.getPulse(user,selectDate);
-    	LinkedList listTime = queryDB.getTime(user,selectDate);
-    	Courbe courbePouls = new Courbe(listPouls,listTime,user,selectDate,"Pouls","Pouls-time");
+    	LinkedList listPouls = queryDB.getPulse(user,dateTS);
+    	LinkedList listTime = queryDB.getTime(user,dateTS);
+    	Courbe courbePouls = new Courbe(listPouls,listTime,user,date,"Pouls","Pouls-time");
    	 
-    	String name = user + selectDate + "Pouls-time";
+    	String name = user + date + "Pouls-time";
     	imagePouls = new JLabel(new ImageIcon("c:"+ name + ".jpg"));
     	imagePouls.setBounds(0,0,250,180);
     	bg_Graph2.add(imagePouls);
 	}
     
 	public void tracerCourbeMVT(){
-    	LinkedList listTime = queryDB.getTime(user,selectDate);
-    	LinkedList<MesureMovement> listMVT = queryDB.getMovement(user,selectDate);
+    	LinkedList listTime = queryDB.getTime(user,dateTS);
+    	LinkedList<MesureMovement> listMVT = queryDB.getMovement(user,dateTS);
     	LinkedList listMaxAcc = new LinkedList();
     	LinkedList listMaxGyr = new LinkedList();
     	LinkedList listAvgAcc = new LinkedList();
@@ -426,8 +435,8 @@ public class UI extends JFrame implements ActionListener{
         	i++;
     	}
     	Courbe courbeMVT = new Courbe(listMaxAcc,listMaxGyr,listAvgAcc,listAvgGyr,listTime,
-            	user,selectDate,"mouvement","MaxAcc","MaxGyr","AvgAcc","AvgGyr","mouvement-time");
-    	String name = user + selectDate + "mouvement-time";
+            	user,date,"mouvement","MaxAcc","MaxGyr","AvgAcc","AvgGyr","mouvement-time");
+    	String name = user + date + "mouvement-time";
     	imageMVT = new JLabel(new ImageIcon("c:"+ name + ".jpg"));
     	imageMVT.setBounds(0,0,250,180);
     	bg_Graph3.add(imageMVT);
@@ -436,10 +445,26 @@ public class UI extends JFrame implements ActionListener{
 	public void tracerCourbeAnalyse(){
     
 	}
-    
-	public static void main (String args[]) throws IOException {
-    UI ui = new UI();   	 
-	}
+        
+        public void itemStateChanged(ItemEvent e){  
+            if(e.getStateChange() == ItemEvent.SELECTED){  
+                date = (String)e.getItem();
+                dateTS = Timestamp.valueOf(date);
+                try {
+                    
+                    tracerCourbeTemp();
+                    tracerCourbePouls();
+                    tracerCourbeMVT();
+                    repaint();
+                } catch (IOException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } 
+        }
+        
+    public static void main (String args[]) throws IOException {
+        UI ui = new UI();   	 
+    }
     
 }
  
