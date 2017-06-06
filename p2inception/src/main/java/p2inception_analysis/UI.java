@@ -53,8 +53,6 @@ public class UI extends JFrame implements ActionListener,ItemListener{
 	private String avgCycle;
 	private String avgParadox;
 
-    
-	private String[] allDate;
         private Timestamp dateTS;
         private String date;
 	private Courbe courbe;
@@ -328,6 +326,9 @@ public class UI extends JFrame implements ActionListener,ItemListener{
     	//BOUTON Chercher
     	if(e.getSource() == myButtonCherche){
         	user = textUsername.getText();
+                boxDate.addItem("");
+                //LinkedList<Date> dateList = new LinkedList<Date>();
+                LinkedList<Timestamp> dateList = new LinkedList<>();
         	if(queryDB.getUser().contains(user)){
                     Time avgCycleA = queryDB.getAvgCycle(user);
                     Time avgParadoxA = queryDB.getAvgParadox(user);
@@ -338,22 +339,20 @@ public class UI extends JFrame implements ActionListener,ItemListener{
                     Info2.setText(avgCycle);
                     Info3.setText(avgParadox);
                 
-                     //JComboBox
-                    DateFormat df2 =  new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
-                    allDate[0] = "2017-03-04 14:08:24";
-                    boxDate.addItem(allDate[0]);
-                    LinkedList dateList = queryDB.getListDate(user);
-                    for(int i=1; i<=dateList.size() ;i++){
-                        allDate[i] = df2.format(dateList.get(i-1));
-                        boxDate.addItem(allDate[i]);
-                    }
-                    repaint();
+                    
         	}
-                /**boxDate.addItem(null);
-            	boxDate.addItem("2017-12-31 00:00:00");
-                boxDate.addItem("2017-12-30 00:00:00");*/
                 
-           	 
+                
+                //JComboBox
+                DateFormat df2 =  new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+                
+                dateList = queryDB.getListDate(user);
+                for(int i=0; i<dateList.size() ;i++){
+                    
+                    boxDate.addItem((String)df2.format( new Date(dateList.get(i).getTime()) ) );
+                }
+                
+                repaint();
        	 
        	 
     	//BOUTON Effacer
